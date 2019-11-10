@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:padding="5dp">
+
+        <LinearLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:gravity="top"
+            android:layout_weight="1">
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:id="@+id/mode_button"
+                android:text="智能模式"
+                android:gravity="center"
+                android:textSize="20sp"
+                >b1</Button>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:id="@+id/status_button"
+                android:text="无限流量模式，有效期至2020年1月1日"
+                android:gravity="center"
+                android:textSize="20sp"
+                >b</Button>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:gravity="bottom"
+            android:layout_weight="5">
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:backgroundTint="#AAAAAA"
+                android:id="@+id/test_button"
+                android:text="test"
+                android:gravity="center"
+                >testButton</Button>
+
+            <Button
+                android:id="@+id/connect_button"
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:text="连  接"
+                android:textColor="@color/color_orange"
+                android:textSize="20sp">connectButton
+            </Button>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

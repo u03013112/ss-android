@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="k_BLACK">-16777216</integer>
+    <integer name="k_DKGRAY">-12303292</integer>
+    <integer name="k_GRAY">-7829368</integer>
+    <integer name="k_LTGRAY">-3355444</integer>
+    <integer name="k_WHITE">-1</integer>
+    <integer name="k_RED">-65536</integer>
+    <integer name="k_GREEN">-16711936</integer>
+    <integer name="k_BLUE">-16776961</integer>
+    <integer name="k_YELLOW">-256</integer>
+    <integer name="k_CYAN">-16711681</integer>
+    <integer name="k_MAGENTA">-65281</integer>
+    <integer name="k_TRANSPARENT">0</integer>
+</resources>
