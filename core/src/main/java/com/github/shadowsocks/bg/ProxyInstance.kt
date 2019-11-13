@@ -22,6 +22,7 @@ package com.github.shadowsocks.bg
 
 import android.content.Context
 import android.util.Base64
+import android.util.Log
 import com.github.shadowsocks.Core
 import com.github.shadowsocks.acl.Acl
 import com.github.shadowsocks.acl.AclSyncer
@@ -122,6 +123,7 @@ class ProxyInstance(val profile: Profile, private val route: String = profile.ro
                 "-t", "600",
                 "-S", stat.absolutePath,
                 "-c", configFile.absolutePath))
+        Log.v("J",stat.absolutePath)
         if (extraFlag != null) cmd.add(extraFlag)
 
         if (route != Acl.ALL) {

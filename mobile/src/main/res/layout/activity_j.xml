@@ -55,7 +55,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:gravity="center"
-                android:text="连  接"
+                android:text="请稍后.."
+                android:backgroundTint="#aaaaaa"
                 android:textColor="@color/color_orange"
                 android:textSize="20sp">connectButton
             </Button>

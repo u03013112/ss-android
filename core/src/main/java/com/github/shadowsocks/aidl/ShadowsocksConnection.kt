@@ -27,6 +27,7 @@ import android.content.ServiceConnection
 import android.os.Handler
 import android.os.IBinder
 import android.os.RemoteException
+import android.util.Log
 import com.github.shadowsocks.bg.BaseService
 import com.github.shadowsocks.bg.ProxyService
 import com.github.shadowsocks.bg.TransproxyService
@@ -68,10 +69,12 @@ class ShadowsocksConnection(private val handler: Handler = Handler(),
     private var callback: Callback? = null
     private val serviceCallback = object : IShadowsocksServiceCallback.Stub() {
         override fun stateChanged(state: Int, profileName: String?, msg: String?) {
+            Log.v("J","stateChanged")
             val callback = callback ?: return
             handler.post { callback.stateChanged(BaseService.State.values()[state], profileName, msg) }
         }
         override fun trafficUpdated(profileId: Long, stats: TrafficStats) {
+            Log.v("J","trafficUpdated")
             val callback = callback ?: return
             handler.post { callback.trafficUpdated(profileId, stats) }
         }

@@ -126,7 +126,6 @@ object BaseService {
                 callbacks.finishBroadcast()
             }
         }
-
         private suspend fun loop() {
             while (true) {
                 delay(bandwidthListeners.values.min() ?: return)
@@ -141,6 +140,7 @@ object BaseService {
                         if (bandwidthListeners.contains(item.asBinder())) {
                             stats.forEach { (id, stats) -> item.trafficUpdated(id, stats) }
                             item.trafficUpdated(0, sum)
+                            Log.v("J",sum.toString())
                         }
                     }
                 }
@@ -206,7 +206,8 @@ object BaseService {
             data = null
         }
     }
-
+    private var updatePerSecEr:Job? = null
+    private var secondCount = 0
     interface Interface {
         val data: Data
         val tag: String
@@ -232,7 +233,20 @@ object BaseService {
 
         fun buildAdditionalArguments(cmd: ArrayList<String>): ArrayList<String> = cmd
 
+
+        private suspend fun updatePerSec() {
+            while (true) {
+                delay(1000)
+                secondCount++
+                Log.v("J","updatePerSec"+ secondCount.toString())
+            }
+        }
+
         suspend fun startProcesses(hosts: HostsFile) {
+            if (updatePerSecEr == null){
+                updatePerSecEr = GlobalScope.launch(Dispatchers.Main.immediate) {updatePerSec()}
+            }
+
             val configRoot = (if (Build.VERSION.SDK_INT < 24 || app.getSystemService<UserManager>()
                             ?.isUserUnlocked != false) app else Core.deviceStorage).noBackupFilesDir
             val udpFallback = data.udpFallback

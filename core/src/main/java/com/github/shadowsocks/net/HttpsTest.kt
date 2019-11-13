@@ -22,6 +22,7 @@ package com.github.shadowsocks.net
 
 import android.os.Build
 import android.os.SystemClock
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.github.shadowsocks.Core
@@ -88,6 +89,7 @@ class HttpsTest : ViewModel() {
             Acl.CHINALIST -> "www.qualcomm.cn"
             else -> "www.google.com"
         }, "/generate_204")
+        Log.v("J",url.toString())
         val conn = (if (DataStore.serviceMode != Key.modeVpn) {
             url.openConnection(Proxy(Proxy.Type.SOCKS, DataStore.proxyAddress))
         } else url.openConnection()) as HttpURLConnection

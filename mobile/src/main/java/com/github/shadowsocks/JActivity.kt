@@ -12,12 +12,20 @@ import android.os.RemoteException
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import androidx.appcompat.widget.TooltipCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.get
+import androidx.lifecycle.observe
 import com.github.shadowsocks.aidl.IShadowsocksService
 import com.github.shadowsocks.aidl.ShadowsocksConnection
 import com.github.shadowsocks.aidl.ShadowsocksConnection.Callback
+import com.github.shadowsocks.aidl.TrafficStats
 import com.github.shadowsocks.bg.BaseService
 import com.github.shadowsocks.database.Profile
 import com.github.shadowsocks.database.ProfileManager
+import com.github.shadowsocks.net.HttpsTest
 import com.github.shadowsocks.preference.DataStore
 import com.github.shadowsocks.utils.Key
 
@@ -35,11 +43,13 @@ class JActivity : AppCompatActivity(), Callback {
 
         testButton = findViewById(R.id.test_button)
         testButton.setOnClickListener{
-            val intent = Intent()
-            intent.setClass(this,MainActivity::class.java)
-            startActivity(intent)
+//            val intent = Intent()
+//            intent.setClass(this,MainActivity::class.java)
+//            startActivity(intent)
+            val tester = ViewModelProvider(this).get<HttpsTest>()
+            tester.testConnection()
+            tester.status.observe(this, Observer { status -> Log.v("J",status.toString()) })
         }
-
         connectButton = findViewById(R.id.connect_button)
         connectButton.setOnClickListener{
             didClickedConnectButton()
@@ -48,6 +58,11 @@ class JActivity : AppCompatActivity(), Callback {
         this.getProfile()
 
         connection.connect(this, this)
+        connection.bandwidthTimeout = 1000
+    }
+
+    private fun setStatus(text: CharSequence) {
+        Log.v("J",text.toString())
     }
 
     private fun setProfile() {
@@ -70,23 +85,20 @@ class JActivity : AppCompatActivity(), Callback {
         Core.switchProfile(this.profile.id)
     }
 
-    private val handler = Handler()
-    private val connection = ShadowsocksConnection(handler, true)
+    private val connection = ShadowsocksConnection(Handler(), true)
     override fun stateChanged(state: BaseService.State, profileName: String?, msg: String?) = changeState(state, msg, true)
     override fun onServiceConnected(service: IShadowsocksService) = changeState(try {
         BaseService.State.values()[service.state]
     } catch (_: RemoteException) {
         BaseService.State.Idle
     })
-    fun changeState(state: BaseService.State, msg: String? = null, animate: Boolean = false) {
+    private fun changeState(state: BaseService.State, msg: String? = null, animate: Boolean = false) {
         this.state = state
-
         when(state) {
             BaseService.State.Idle,BaseService.State.Stopped -> {
                 this.connectButton.text = "连  接"
-                this.connectButton.setTextColor(Color.LTGRAY)
+                this.connectButton.setTextColor(Color.WHITE)
                 this.connectButton.background.setTint(Color.GREEN)
-
             }
             BaseService.State.Connected -> {
                 this.connectButton.text = "断  开"
@@ -101,7 +113,17 @@ class JActivity : AppCompatActivity(), Callback {
         }
     }
 
-    fun didClickedConnectButton() {
+    override fun trafficUpdated(profileId: Long, stats: TrafficStats) {
+        Log.e("J","trafficUpdated")
+        if (profileId == 0L){
+            Log.v("J", stats.txRate.toString())
+            Log.v("J", stats.rxRate.toString())
+            Log.v("J", stats.txTotal.toString())
+            Log.v("J", stats.rxTotal.toString())
+        }
+    }
+
+    private fun didClickedConnectButton() {
         when {
             state.canStop -> Core.stopService()
             else -> Core.startService()
