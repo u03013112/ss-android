@@ -9,9 +9,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.RemoteException
+import android.text.format.Formatter
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.widget.TooltipCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -116,10 +118,12 @@ class JActivity : AppCompatActivity(), Callback {
     override fun trafficUpdated(profileId: Long, stats: TrafficStats) {
         Log.e("J","trafficUpdated")
         if (profileId == 0L){
-            Log.v("J", stats.txRate.toString())
-            Log.v("J", stats.rxRate.toString())
-            Log.v("J", stats.txTotal.toString())
-            Log.v("J", stats.rxTotal.toString())
+            findViewById<TextView>(R.id.netflow_total_textView).text = "▲   ${Formatter.formatFileSize(this, stats.txTotal)}\n▼   ${Formatter.formatFileSize(this, stats.rxTotal)}"
+            findViewById<TextView>(R.id.netflow_rate_textView).text = " ${Formatter.formatFileSize(this, stats.txRate)}ps\n${Formatter.formatFileSize(this, stats.rxRate)}ps"
+//            Log.v("J", stats.txRate.toString())
+//            Log.v("J", stats.rxRate.toString())
+//            Log.v("J", stats.txTotal.toString())
+//            Log.v("J", stats.rxTotal.toString())
         }
     }
 
