@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.RemoteException
+import android.provider.Settings
 import android.text.format.Formatter
 import android.util.Log
 import android.view.View
@@ -52,9 +53,6 @@ class JActivity : AppCompatActivity(), Callback {
 //            val tester = ViewModelProvider(this).get<HttpsTest>()
 //            tester.testConnection()
 //            tester.status.observe(this, Observer { status -> Log.v("J",status.toString()) })
-            var post = ViewModelProvider(this).get<HttpPost>()
-
-            post.post("https://frp.u03013112.win:18022/v1/ios/login","{\"uuid\":\"123456789\"}",{str -> Log.v("J","cb:"+str)},{err -> Log.e("J",err)})
         }
         connectButton = findViewById(R.id.connect_button)
         connectButton.setOnClickListener{
@@ -132,5 +130,20 @@ class JActivity : AppCompatActivity(), Callback {
             state.canStop -> Core.stopService()
             else -> Core.startService()
         }
+    }
+
+    private fun login() {
+        val androidID = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+        Log.v("J",androidID)
+        var post = ViewModelProvider(this).get<HttpPost>()
+        post.post("https://frp.u03013112.win:18022/v1/ios/login","{\"uuid\":\"${androidID}\"}",
+                {str -> {
+                        Log.v("J","cb:"+str)
+                    }
+                },
+                {err -> {
+                        Log.e("J", err)
+                    }
+                })
     }
 }

@@ -1,5 +1,6 @@
 package com.github.shadowsocks.net
 
+import android.provider.Settings
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.github.kittinunf.fuel.Fuel
@@ -13,16 +14,22 @@ class HttpPost : ViewModel() {
         header["Content-Type"] = "application/json"
 
         Fuel.post(url)
-            .body(data)
-            .header(header)
-            .responseString { _, _, result ->
-                result.fold({
+        .body(data)
+        .header(header)
+        .responseString { _, _, result ->
+            result.fold({
 //                    Log.e("J", it)
-                    callback(it)
-                }, {
+                callback(it)
+            }, {
 //                    Log.e("J", it.message)
-                    it.message?.let { it1 -> failed(it1) }
-                })
-            }
+                it.message?.let { it1 -> failed(it1) }
+            })
+        }
+    }
+
+    fun login() {
+
+
+
     }
 }
