@@ -27,6 +27,7 @@ import com.github.shadowsocks.aidl.TrafficStats
 import com.github.shadowsocks.bg.BaseService
 import com.github.shadowsocks.database.Profile
 import com.github.shadowsocks.database.ProfileManager
+import com.github.shadowsocks.net.HttpPost
 import com.github.shadowsocks.net.HttpsTest
 import com.github.shadowsocks.preference.DataStore
 import com.github.shadowsocks.utils.Key
@@ -48,9 +49,12 @@ class JActivity : AppCompatActivity(), Callback {
 //            val intent = Intent()
 //            intent.setClass(this,MainActivity::class.java)
 //            startActivity(intent)
-            val tester = ViewModelProvider(this).get<HttpsTest>()
-            tester.testConnection()
-            tester.status.observe(this, Observer { status -> Log.v("J",status.toString()) })
+//            val tester = ViewModelProvider(this).get<HttpsTest>()
+//            tester.testConnection()
+//            tester.status.observe(this, Observer { status -> Log.v("J",status.toString()) })
+            var post = ViewModelProvider(this).get<HttpPost>()
+
+            post.post("https://frp.u03013112.win:18022/v1/ios/login","{\"uuid\":\"123456789\"}",{str -> Log.v("J","cb:"+str)},{err -> Log.e("J",err)})
         }
         connectButton = findViewById(R.id.connect_button)
         connectButton.setOnClickListener{
@@ -119,11 +123,7 @@ class JActivity : AppCompatActivity(), Callback {
         Log.e("J","trafficUpdated")
         if (profileId == 0L){
             findViewById<TextView>(R.id.netflow_total_textView).text = "▲   ${Formatter.formatFileSize(this, stats.txTotal)}\n▼   ${Formatter.formatFileSize(this, stats.rxTotal)}"
-            findViewById<TextView>(R.id.netflow_rate_textView).text = " ${Formatter.formatFileSize(this, stats.txRate)}ps\n${Formatter.formatFileSize(this, stats.rxRate)}ps"
-//            Log.v("J", stats.txRate.toString())
-//            Log.v("J", stats.rxRate.toString())
-//            Log.v("J", stats.txTotal.toString())
-//            Log.v("J", stats.rxTotal.toString())
+            findViewById<TextView>(R.id.netflow_rate_textView).text = " ${Formatter.formatFileSize(this, stats.txRate)}/s\n${Formatter.formatFileSize(this, stats.rxRate)}/s"
         }
     }
 
