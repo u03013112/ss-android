@@ -27,6 +27,7 @@ object Key {
     const val DB_PUBLIC = "config.db"
     const val DB_PROFILE = "profile.db"
 
+    const val token = "token"
     const val id = "profileId"
     const val name = "profileName"
 

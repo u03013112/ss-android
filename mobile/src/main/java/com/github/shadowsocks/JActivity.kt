@@ -32,6 +32,7 @@ import com.github.shadowsocks.net.HttpPost
 import com.github.shadowsocks.net.HttpsTest
 import com.github.shadowsocks.preference.DataStore
 import com.github.shadowsocks.utils.Key
+import com.google.gson.Gson
 
 class JActivity : AppCompatActivity(), Callback {
 
@@ -53,6 +54,7 @@ class JActivity : AppCompatActivity(), Callback {
 //            val tester = ViewModelProvider(this).get<HttpsTest>()
 //            tester.testConnection()
 //            tester.status.observe(this, Observer { status -> Log.v("J",status.toString()) })
+            login()
         }
         connectButton = findViewById(R.id.connect_button)
         connectButton.setOnClickListener{
@@ -137,13 +139,23 @@ class JActivity : AppCompatActivity(), Callback {
         Log.v("J",androidID)
         var post = ViewModelProvider(this).get<HttpPost>()
         post.post("https://frp.u03013112.win:18022/v1/ios/login","{\"uuid\":\"${androidID}\"}",
-                {str -> {
-                        Log.v("J","cb:"+str)
-                    }
-                },
-                {err -> {
-                        Log.e("J", err)
-                    }
-                })
+                {str -> loginSuccess(str)},
+                {err -> Log.e("J", err)})
+    }
+
+    data class LoginData (
+        val error : String = "",
+        val token : String = ""
+    )
+
+    private fun loginSuccess(str : String) {
+        Log.v("J",str)
+
+
+        val d = Gson().fromJson(str, LoginData::class.java)
+        val error = d.error
+        val token = d.token
+
+        Log.v("J","error:"+error+" token:"+token)
     }
 }
