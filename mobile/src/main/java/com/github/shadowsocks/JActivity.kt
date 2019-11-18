@@ -34,6 +34,12 @@ import com.github.shadowsocks.net.HttpsTest
 import com.github.shadowsocks.preference.DataStore
 import com.github.shadowsocks.utils.Key
 import com.google.gson.Gson
+import kotlinx.android.synthetic.main.layout_apps.*
+import kotlinx.android.synthetic.main.layout_apps.view.*
+import org.jetbrains.anko.alert
+import org.jetbrains.anko.cancelButton
+import org.jetbrains.anko.longToast
+import org.jetbrains.anko.toast
 import java.text.SimpleDateFormat
 
 class JActivity : AppCompatActivity(), Callback {
@@ -42,6 +48,7 @@ class JActivity : AppCompatActivity(), Callback {
     lateinit var connectButton: Button
     lateinit var profile : Profile
 
+    var ready = false
     var state = BaseService.State.Idle
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,14 +57,14 @@ class JActivity : AppCompatActivity(), Callback {
 
         testButton = findViewById(R.id.test_button)
         testButton.setOnClickListener{
-//            val intent = Intent()
-//            intent.setClass(this,MainActivity::class.java)
-//            startActivity(intent)
-//            val tester = ViewModelProvider(this).get<HttpsTest>()
-//            tester.testConnection()
-//            tester.status.observe(this, Observer { status -> Log.v("J",status.toString()) })
-            login()
+//             v ->
+//                alert("真的卸载吗?", "尊敬的用户") {
+//                    positiveButton("残忍卸载") {  }
+//                    negativeButton("我再想想") {toast("login success!") }
+//                    cancelButton { Log.v("J","cancel") }
+//                }.show()
         }
+
         connectButton = findViewById(R.id.connect_button)
         connectButton.setOnClickListener{
             didClickedConnectButton()
@@ -67,6 +74,8 @@ class JActivity : AppCompatActivity(), Callback {
 
         connection.connect(this, this)
         connection.bandwidthTimeout = 1000
+
+        login()
     }
 
     private fun setStatus(text: CharSequence) {
@@ -122,7 +131,16 @@ class JActivity : AppCompatActivity(), Callback {
     private fun didClickedConnectButton() {
         when {
             state.canStop -> Core.stopService()
-            else -> Core.startService()
+            else ->
+                if ( false === ready ){
+//                    longToast("需要连接服务器")
+                    alert("连接服务器失败", "尊敬的用户") {
+                        positiveButton("重试") { getVPNConfig() }
+                    }.show()
+                }else{
+                    Core.startService()
+                }
+
         }
     }
 
@@ -150,6 +168,7 @@ class JActivity : AppCompatActivity(), Callback {
         post.post("https://frp.u03013112.win:18022/v1/android/login","{\"uuid\":\"${androidID}\"}",
             {str ->
                 Log.v("J",str)
+                toast("登陆成功!")
                 val d = Gson().fromJson(str, LoginData::class.java)
 
                 val token = d.token
@@ -161,6 +180,8 @@ class JActivity : AppCompatActivity(), Callback {
                 return@post
             }, {
                 err -> Log.e("J", err)
+                toast("登陆失败，正在重试!")
+                login()
             }
         )
     }
@@ -175,18 +196,24 @@ class JActivity : AppCompatActivity(), Callback {
     private  fun getVPNConfig() {
         var post = ViewModelProvider(this).get<HttpPost>()
         post.post("https://frp.u03013112.win:18022/v1/android/config","{\"token\":\"${DataStore.token}\"}",
-                {str ->
-                    Log.v("J",str)
-                    val d = Gson().fromJson(str, VPNConfig::class.java)
-
-                    this.profile.host=d.IP
-                    this.profile.remotePort=d.port.toInt()
-                    this.profile.password=d.passwd
-                    this.profile.method=d.method
-                    ProfileManager.updateProfile(this.profile)
-
-                    return@post
-                },
-                {err -> Log.e("J", err)})
+            {str ->
+                Log.v("J",str)
+                val d = Gson().fromJson(str, VPNConfig::class.java)
+                this.profile.host=d.IP
+                this.profile.remotePort=d.port.toInt()
+                this.profile.password=d.passwd
+                this.profile.method=d.method
+                ProfileManager.updateProfile(this.profile)
+                ready = true
+                return@post
+            },
+            {err ->
+                ready = false
+                Log.e("J", err)
+                alert("连接服务器失败", "尊敬的用户") {
+                    positiveButton("重试") { getVPNConfig() }
+                }.show()
+            }
+        )
     }
 }
