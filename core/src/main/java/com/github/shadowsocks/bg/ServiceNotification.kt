@@ -66,6 +66,7 @@ class ServiceNotification(private val service: BaseService.Interface, profileNam
                 show()
             }
             override fun trafficPersisted(profileId: Long) { }
+            override fun keepalive(jsonStr: String?) { }
         }
     }
     private var callbackRegistered = false

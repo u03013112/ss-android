@@ -7,4 +7,5 @@ oneway interface IShadowsocksServiceCallback {
   void trafficUpdated(long profileId, in TrafficStats stats);
   // Traffic data has persisted to database, listener should refetch their data from database
   void trafficPersisted(long profileId);
+  void keepalive(String jsonStr);
 }

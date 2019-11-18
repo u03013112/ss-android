@@ -82,6 +82,10 @@ class ShadowsocksConnection(private val handler: Handler = Handler(),
             val callback = callback ?: return
             handler.post { callback.trafficPersisted(profileId) }
         }
+
+        override fun keepalive(jsonStr: String?) {
+//            Log.v("J","AAA:"+jsonStr)
+        }
     }
     private var binder: IBinder? = null
 

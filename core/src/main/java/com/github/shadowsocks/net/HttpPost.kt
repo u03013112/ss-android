@@ -21,7 +21,7 @@ class HttpPost : ViewModel() {
 //                    Log.e("J", it)
                 callback(it)
             }, {
-//                    Log.e("J", it.message)
+//                Log.e("J", it.message)
                 it.message?.let { it1 -> failed(it1) }
             })
         }

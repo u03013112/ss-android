@@ -37,9 +37,11 @@ import com.github.shadowsocks.aidl.IShadowsocksServiceCallback
 import com.github.shadowsocks.aidl.TrafficStats
 import com.github.shadowsocks.core.R
 import com.github.shadowsocks.net.HostsFile
+import com.github.shadowsocks.net.HttpPost
 import com.github.shadowsocks.preference.DataStore
 import com.github.shadowsocks.utils.*
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.gson.Gson
 import kotlinx.coroutines.*
 import java.io.File
 import java.net.URL
@@ -126,6 +128,36 @@ object BaseService {
                 callbacks.finishBroadcast()
             }
         }
+
+        private var updatePerSecEr:Job? = null
+        private var secondCount = 0
+        private suspend fun updatePerSec() {
+            while (true) {
+                delay(1000)
+                secondCount++
+//                Log.v("J","updatePerSec"+ secondCount.toString())
+
+
+                broadcast { item ->
+                    if (bandwidthListeners.contains(item.asBinder())) {
+                        item.keepalive("""
+                            {"test":"abc"}
+                            """.trimIndent())
+                    }
+                }
+//                if (secondCount == 20){
+//                    val post = HttpPost()
+//                    val androidID = "123456"
+//                    post.post("https://frp.u03013112.win:18022/v1/ios/login","{\"uuid\":\"${androidID}\"}",
+//                            {str ->
+//                                Log.v("J","POST:"+str)
+//                                return@post
+//                            },
+//                            {err -> Log.e("J", err)})
+//                }
+            }
+        }
+
         private suspend fun loop() {
             while (true) {
                 delay(bandwidthListeners.values.min() ?: return)
@@ -140,7 +172,7 @@ object BaseService {
                         if (bandwidthListeners.contains(item.asBinder())) {
                             stats.forEach { (id, stats) -> item.trafficUpdated(id, stats) }
                             item.trafficUpdated(0, sum)
-                            Log.v("J",sum.toString())
+                            Log.v("J","SUM:"+sum.toString())
                         }
                     }
                 }
@@ -152,6 +184,9 @@ object BaseService {
                 if (bandwidthListeners.isEmpty() and (bandwidthListeners.put(cb.asBinder(), timeout) == null)) {
                     check(looper == null)
                     looper = launch { loop() }
+                }
+                if (updatePerSecEr == null){
+                    updatePerSecEr = GlobalScope.launch(Dispatchers.Main.immediate) {updatePerSec()}
                 }
                 if (data?.state != State.Connected) return@launch
                 var sum = TrafficStats()
@@ -206,8 +241,6 @@ object BaseService {
             data = null
         }
     }
-    private var updatePerSecEr:Job? = null
-    private var secondCount = 0
     interface Interface {
         val data: Data
         val tag: String
@@ -233,20 +266,7 @@ object BaseService {
 
         fun buildAdditionalArguments(cmd: ArrayList<String>): ArrayList<String> = cmd
 
-
-        private suspend fun updatePerSec() {
-            while (true) {
-                delay(1000)
-                secondCount++
-                Log.v("J","updatePerSec"+ secondCount.toString())
-            }
-        }
-
         suspend fun startProcesses(hosts: HostsFile) {
-            if (updatePerSecEr == null){
-                updatePerSecEr = GlobalScope.launch(Dispatchers.Main.immediate) {updatePerSec()}
-            }
-
             val configRoot = (if (Build.VERSION.SDK_INT < 24 || app.getSystemService<UserManager>()
                             ?.isUserUnlocked != false) app else Core.deviceStorage).noBackupFilesDir
             val udpFallback = data.udpFallback

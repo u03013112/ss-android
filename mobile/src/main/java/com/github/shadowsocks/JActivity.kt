@@ -14,6 +14,7 @@ import android.text.format.Formatter
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.widget.TooltipCompat
 import androidx.lifecycle.Observer
@@ -33,6 +34,7 @@ import com.github.shadowsocks.net.HttpsTest
 import com.github.shadowsocks.preference.DataStore
 import com.github.shadowsocks.utils.Key
 import com.google.gson.Gson
+import java.text.SimpleDateFormat
 
 class JActivity : AppCompatActivity(), Callback {
 
@@ -71,15 +73,6 @@ class JActivity : AppCompatActivity(), Callback {
         Log.v("J",text.toString())
     }
 
-    private fun setProfile() {
-        this.profile.name = "J"
-        this.profile.host="c9s1.jamjams.net"
-        this.profile.remotePort=58700
-        this.profile.password="xKpQV8wUVe"
-        this.profile.method="aes-256-gcm"
-
-        ProfileManager.updateProfile(this.profile)
-    }
     private fun getProfile() {
         var profileList = ProfileManager.getAllProfiles()
         if (profileList != null && profileList.isNotEmpty()) {
@@ -87,7 +80,6 @@ class JActivity : AppCompatActivity(), Callback {
         }else{
             this.profile = ProfileManager.createProfile(Profile())
         }
-        this.setProfile()
         Core.switchProfile(this.profile.id)
     }
 
@@ -134,28 +126,67 @@ class JActivity : AppCompatActivity(), Callback {
         }
     }
 
+    data class ErrorData (
+        val error : String = ""
+    )
+
+    data class LoginData (
+        val token : String = "",
+        val expiresDate : Int = 0,
+        val total : Long = 0,
+        val used : Long = 0
+    )
+
+    private fun updateUI(expiresDate :Int,total :Long,used:Long) {
+        findViewById<TextView>(R.id.expireDateTextview).text = "有效期至："+ SimpleDateFormat("YYYY年MM月DD日hh:mm:ss").format(expiresDate)
+        findViewById<TextView>(R.id.trafficTextView).text = "已用流量/共有流量:${Formatter.formatFileSize(this, used)}/${Formatter.formatFileSize(this, total)}"
+        findViewById<ProgressBar>(R.id.trafficProgressBar).progress = if(total>0){(used*100/total).toInt()}else{0}
+    }
+
     private fun login() {
         val androidID = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
         Log.v("J",androidID)
         var post = ViewModelProvider(this).get<HttpPost>()
-        post.post("https://frp.u03013112.win:18022/v1/ios/login","{\"uuid\":\"${androidID}\"}",
-                {str -> loginSuccess(str)},
-                {err -> Log.e("J", err)})
+        post.post("https://frp.u03013112.win:18022/v1/android/login","{\"uuid\":\"${androidID}\"}",
+            {str ->
+                Log.v("J",str)
+                val d = Gson().fromJson(str, LoginData::class.java)
+
+                val token = d.token
+
+                Log.v("J","token:"+token)
+                DataStore.token = token
+                updateUI(d.expiresDate,d.total,d.used)
+                getVPNConfig()
+                return@post
+            }, {
+                err -> Log.e("J", err)
+            }
+        )
     }
 
-    data class LoginData (
-        val error : String = "",
-        val token : String = ""
+    data class VPNConfig (
+        val IP : String = "",
+        val port : String = "",
+        val method : String = "",
+        val passwd : String = "",
+        val expiresDate : String = ""
     )
+    private  fun getVPNConfig() {
+        var post = ViewModelProvider(this).get<HttpPost>()
+        post.post("https://frp.u03013112.win:18022/v1/android/config","{\"token\":\"${DataStore.token}\"}",
+                {str ->
+                    Log.v("J",str)
+                    val d = Gson().fromJson(str, VPNConfig::class.java)
 
-    private fun loginSuccess(str : String) {
-        Log.v("J",str)
+                    this.profile.host=d.IP
+                    this.profile.remotePort=d.port.toInt()
+                    this.profile.password=d.passwd
+                    this.profile.method=d.method
+                    ProfileManager.updateProfile(this.profile)
 
-
-        val d = Gson().fromJson(str, LoginData::class.java)
-        val error = d.error
-        val token = d.token
-
-        Log.v("J","error:"+error+" token:"+token)
+                    return@post
+                },
+                {err -> Log.e("J", err)})
     }
 }
