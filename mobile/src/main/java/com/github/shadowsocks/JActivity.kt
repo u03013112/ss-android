@@ -41,6 +41,7 @@ import org.jetbrains.anko.cancelButton
 import org.jetbrains.anko.longToast
 import org.jetbrains.anko.toast
 import java.text.SimpleDateFormat
+import java.util.*
 
 class JActivity : AppCompatActivity(), Callback {
 
@@ -127,7 +128,16 @@ class JActivity : AppCompatActivity(), Callback {
             findViewById<TextView>(R.id.netflow_rate_textView).text = " ${Formatter.formatFileSize(this, stats.txRate)}/s\n${Formatter.formatFileSize(this, stats.rxRate)}/s"
         }
     }
-
+    private data class keepaliveData(
+            val needStop : Boolean = false,
+            val expiresDate : String = "0",
+            val total : String = "0",
+            val used : String = "0"
+    )
+    override fun keepalive(str: String) {
+        val d = Gson().fromJson(str, keepaliveData::class.java)
+        updateUI(d.expiresDate.toInt(),d.total.toLong(),d.used.toLong())
+    }
     private fun didClickedConnectButton() {
         when {
             state.canStop -> Core.stopService()
@@ -156,7 +166,10 @@ class JActivity : AppCompatActivity(), Callback {
     )
 
     private fun updateUI(expiresDate :Int,total :Long,used:Long) {
-        findViewById<TextView>(R.id.expireDateTextview).text = "有效期至："+ SimpleDateFormat("YYYY年MM月DD日hh:mm:ss").format(expiresDate)
+        var calendar = Calendar.getInstance()
+        calendar.setTimeInMillis(expiresDate.toLong()*1000)
+
+        findViewById<TextView>(R.id.expireDateTextview).text = "有效期至："+ SimpleDateFormat("YYYY年MM月DD日hh:mm:ss").format(calendar.time)
         findViewById<TextView>(R.id.trafficTextView).text = "已用流量/共有流量:${Formatter.formatFileSize(this, used)}/${Formatter.formatFileSize(this, total)}"
         findViewById<ProgressBar>(R.id.trafficProgressBar).progress = if(total>0){(used*100/total).toInt()}else{0}
     }
@@ -164,7 +177,7 @@ class JActivity : AppCompatActivity(), Callback {
     private fun login() {
         val androidID = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
         Log.v("J",androidID)
-        var post = ViewModelProvider(this).get<HttpPost>()
+        val post = ViewModelProvider(this).get<HttpPost>()
         post.post("https://frp.u03013112.win:18022/v1/android/login","{\"uuid\":\"${androidID}\"}",
             {str ->
                 Log.v("J",str)

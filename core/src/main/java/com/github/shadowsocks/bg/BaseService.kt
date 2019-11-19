@@ -131,30 +131,47 @@ object BaseService {
 
         private var updatePerSecEr:Job? = null
         private var secondCount = 0
+        private var rx = 0L
+        private data class keepaliveData(
+            val needStop : Boolean = false,
+            val expiresDate : String = "0",
+            val total : String = "0",
+            val used : String = "0"
+        )
         private suspend fun updatePerSec() {
             while (true) {
                 delay(1000)
                 secondCount++
 //                Log.v("J","updatePerSec"+ secondCount.toString())
 
-
-                broadcast { item ->
-                    if (bandwidthListeners.contains(item.asBinder())) {
-                        item.keepalive("""
-                            {"test":"abc"}
+                if (DataStore.token != "" && secondCount % 30 == 0) {
+                    val post = HttpPost()
+                    val s = """
+                        {"token":"${DataStore.token}","rx":${rx}}
+                    """.trimIndent()
+                    Log.v("J",s)
+                    post.post("https://frp.u03013112.win:18022/v1/android/keepalive",s,{str ->
+                        Log.v("J",str)
+                        val d = Gson().fromJson(str, keepaliveData::class.java)
+                        if (d.needStop){
+                            Core.stopService()
+                        }
+                        broadcast { item ->
+                            if (bandwidthListeners.contains(item.asBinder())) {
+                                item.keepalive("""
+                            {
+                                "expiresDate":"${d.expiresDate}",
+                                "total":${d.total},
+                                "used":${d.used}
+                            }
                             """.trimIndent())
-                    }
+                            }
+                        }
+                    },{
+                        err -> Log.e("J", err)
+                        Core.stopService()
+                    })
                 }
-//                if (secondCount == 20){
-//                    val post = HttpPost()
-//                    val androidID = "123456"
-//                    post.post("https://frp.u03013112.win:18022/v1/ios/login","{\"uuid\":\"${androidID}\"}",
-//                            {str ->
-//                                Log.v("J","POST:"+str)
-//                                return@post
-//                            },
-//                            {err -> Log.e("J", err)})
-//                }
             }
         }
 
@@ -173,6 +190,7 @@ object BaseService {
                             stats.forEach { (id, stats) -> item.trafficUpdated(id, stats) }
                             item.trafficUpdated(0, sum)
                             Log.v("J","SUM:"+sum.toString())
+                            rx = sum.rxTotal
                         }
                     }
                 }

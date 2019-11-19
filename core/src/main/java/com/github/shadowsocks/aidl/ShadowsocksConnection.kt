@@ -55,6 +55,7 @@ class ShadowsocksConnection(private val handler: Handler = Handler(),
         fun stateChanged(state: BaseService.State, profileName: String?, msg: String?)
         fun trafficUpdated(profileId: Long, stats: TrafficStats) { }
         fun trafficPersisted(profileId: Long) { }
+        fun keepalive(str:String) { }
 
         fun onServiceConnected(service: IShadowsocksService)
         /**
@@ -84,7 +85,9 @@ class ShadowsocksConnection(private val handler: Handler = Handler(),
         }
 
         override fun keepalive(jsonStr: String?) {
-//            Log.v("J","AAA:"+jsonStr)
+            Log.v("J","AAA:${jsonStr}")
+            val callback = callback ?: return
+            handler.post { jsonStr?.let { callback.keepalive(it) } }
         }
     }
     private var binder: IBinder? = null
