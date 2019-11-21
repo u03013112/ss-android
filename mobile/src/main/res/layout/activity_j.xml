@@ -52,13 +52,15 @@
             </LinearLayout>
 
             <Button
+                android:id="@+id/purshaseButton"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:id="@+id/mode_button"
-                android:text="智能模式"
                 android:gravity="center"
+                android:text="购买流量"
+                android:textColor="@color/color_orange"
                 android:textSize="20sp"
-                >b1</Button>
+                android:backgroundTint="@color/design_default_color_on_primary"
+                >purshase</Button>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
@@ -92,6 +94,23 @@
                     android:textColor="@color/color_blue"
                     >flow</TextView>
             </LinearLayout>
+            <TextView
+                android:layout_marginTop="30dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="科学上网内测版本\n每个新用户可以领取10GB流量进行测试\n内测第一阶段7天，祝大家玩的开心！"
+                android:textSize="18sp"
+                />
+            <TextView
+                android:layout_marginTop="30dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/color_green"
+                android:text="个别版本的安卓手机需要在设置中允许后台运行\n请自行设置~"
+                android:textSize="18sp"
+                />
         </LinearLayout>
 
         <LinearLayout
@@ -100,14 +119,15 @@
             android:orientation="vertical"
             android:gravity="bottom"
             android:layout_weight="5">
+
             <Button
+                android:id="@+id/test_button"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:backgroundTint="#AAAAAA"
-                android:id="@+id/test_button"
-                android:text="test"
                 android:gravity="center"
-                >testButton</Button>
+                android:text="test"
+                android:visibility="invisible">testButton</Button>
 
             <Button
                 android:id="@+id/connect_button"

@@ -49,22 +49,11 @@ class JActivity : AppCompatActivity(), Callback {
     lateinit var connectButton: Button
     lateinit var profile : Profile
 
-    var ready = false
     var state = BaseService.State.Idle
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_j)
-
-        testButton = findViewById(R.id.test_button)
-        testButton.setOnClickListener{
-//             v ->
-//                alert("真的卸载吗?", "尊敬的用户") {
-//                    positiveButton("残忍卸载") {  }
-//                    negativeButton("我再想想") {toast("login success!") }
-//                    cancelButton { Log.v("J","cancel") }
-//                }.show()
-        }
 
         connectButton = findViewById(R.id.connect_button)
         connectButton.setOnClickListener{
@@ -141,16 +130,7 @@ class JActivity : AppCompatActivity(), Callback {
     private fun didClickedConnectButton() {
         when {
             state.canStop -> Core.stopService()
-            else ->
-                if ( false === ready ){
-//                    longToast("需要连接服务器")
-                    alert("连接服务器失败", "尊敬的用户") {
-                        positiveButton("重试") { getVPNConfig() }
-                    }.show()
-                }else{
-                    Core.startService()
-                }
-
+            else -> getVPNConfig()
         }
     }
 
@@ -166,12 +146,47 @@ class JActivity : AppCompatActivity(), Callback {
     )
 
     private fun updateUI(expiresDate :Int,total :Long,used:Long) {
-        var calendar = Calendar.getInstance()
-        calendar.setTimeInMillis(expiresDate.toLong()*1000)
+        Log.v("J","${expiresDate},${total},${used}")
+        if (expiresDate == 0){
+            findViewById<TextView>(R.id.expireDateTextview).text = "欢迎光临！"
+            findViewById<TextView>(R.id.trafficTextView).text = "大爷来玩啊~"
+            findViewById<ProgressBar>(R.id.trafficProgressBar).visibility = View.INVISIBLE
 
-        findViewById<TextView>(R.id.expireDateTextview).text = "有效期至："+ SimpleDateFormat("YYYY年MM月DD日hh:mm:ss").format(calendar.time)
-        findViewById<TextView>(R.id.trafficTextView).text = "已用流量/共有流量:${Formatter.formatFileSize(this, used)}/${Formatter.formatFileSize(this, total)}"
-        findViewById<ProgressBar>(R.id.trafficProgressBar).progress = if(total>0){(used*100/total).toInt()}else{0}
+            findViewById<Button>(R.id.purshaseButton).text = "新用户免费领取使用大礼包"
+            findViewById<Button>(R.id.purshaseButton).setOnClickListener{
+                val post = ViewModelProvider(this).get<HttpPost>()
+                post.post("https://frp.u03013112.win:18022/v1/android/buyTest","""
+                    {"token":"${DataStore.token}","prodectionID":1}
+                """.trimIndent(),
+                        {str ->
+                            Log.v("J",str)
+                            toast("领取成功!")
+                            val d = Gson().fromJson(str, LoginData::class.java)
+                            updateUI(d.expiresDate,d.total,d.used)
+                            return@post
+                        }, {
+                    err -> Log.e("J", err)
+                        toast("登陆失败，正在重试!")
+                    }
+                )
+            }
+        }else {
+            var calendar = Calendar.getInstance()
+            calendar.timeInMillis = expiresDate.toLong() * 1000
+            Log.v("J",calendar.time.toString())
+            findViewById<TextView>(R.id.expireDateTextview).text = "有效期至：${SimpleDateFormat("yyyy年MM月dd日HH:mm:ss").format(calendar.time)}"
+            findViewById<TextView>(R.id.trafficTextView).text = "已用流量/共有流量:${Formatter.formatFileSize(this, used)}/${Formatter.formatFileSize(this, total)}"
+            findViewById<ProgressBar>(R.id.trafficProgressBar).progress = if (total > 0) {
+                (used * 100 / total).toInt()
+            } else {
+                0
+            }
+            findViewById<Button>(R.id.purshaseButton).text = "购买流量"
+            findViewById<ProgressBar>(R.id.trafficProgressBar).visibility = View.VISIBLE
+            findViewById<Button>(R.id.purshaseButton).setOnClickListener{
+                longToast("内测阶段，暂不开放")
+            }
+        }
     }
 
     private fun login() {
@@ -189,7 +204,7 @@ class JActivity : AppCompatActivity(), Callback {
                 Log.v("J","token:"+token)
                 DataStore.token = token
                 updateUI(d.expiresDate,d.total,d.used)
-                getVPNConfig()
+//                getVPNConfig()
                 return@post
             }, {
                 err -> Log.e("J", err)
@@ -217,11 +232,11 @@ class JActivity : AppCompatActivity(), Callback {
                 this.profile.password=d.passwd
                 this.profile.method=d.method
                 ProfileManager.updateProfile(this.profile)
-                ready = true
+
+                Core.startService()
                 return@post
             },
             {err ->
-                ready = false
                 Log.e("J", err)
                 alert("连接服务器失败", "尊敬的用户") {
                     positiveButton("重试") { getVPNConfig() }
