@@ -71,6 +71,7 @@ dependencies {
     implementation 'xyz.belvi.mobilevision:barcodescanner:2.0.3'
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation "org.jetbrains.anko:anko:0.10.8"
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "androidx.test:runner:$androidTestVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidEspressoVersion"

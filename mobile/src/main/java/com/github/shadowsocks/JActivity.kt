@@ -190,6 +190,8 @@ class JActivity : AppCompatActivity(), Callback {
                     longToast("测试模式:${DataStore.token}")
                 } else {
                     longToast("内测阶段，暂不开放")
+                    var intent : Intent = Intent(this,StoreActivity::class.java)
+                    startActivity(intent)
                 }
 
             }
