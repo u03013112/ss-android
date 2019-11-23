@@ -85,7 +85,6 @@ class ShadowsocksConnection(private val handler: Handler = Handler(),
         }
 
         override fun keepalive(jsonStr: String?) {
-            Log.v("J","AAA:${jsonStr}")
             val callback = callback ?: return
             handler.post { jsonStr?.let { callback.keepalive(it) } }
         }

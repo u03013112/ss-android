@@ -161,8 +161,8 @@ object BaseService {
                                 item.keepalive("""
                             {
                                 "expiresDate":"${d.expiresDate}",
-                                "total":${d.total},
-                                "used":${d.used}
+                                "total":"${d.total}",
+                                "used":"${d.used}"
                             }
                             """.trimIndent())
                             }

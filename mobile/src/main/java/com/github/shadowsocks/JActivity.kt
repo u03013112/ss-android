@@ -34,12 +34,10 @@ import com.github.shadowsocks.net.HttpsTest
 import com.github.shadowsocks.preference.DataStore
 import com.github.shadowsocks.utils.Key
 import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import kotlinx.android.synthetic.main.layout_apps.*
 import kotlinx.android.synthetic.main.layout_apps.view.*
-import org.jetbrains.anko.alert
-import org.jetbrains.anko.cancelButton
-import org.jetbrains.anko.longToast
-import org.jetbrains.anko.toast
+import org.jetbrains.anko.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -125,7 +123,7 @@ class JActivity : AppCompatActivity(), Callback {
     )
     override fun keepalive(str: String) {
         val d = Gson().fromJson(str, keepaliveData::class.java)
-        updateUI(d.expiresDate.toInt(),d.total.toLong(),d.used.toLong())
+        updateUI(d.expiresDate.toLong(),d.total.toLong(),d.used.toLong())
     }
     private fun didClickedConnectButton() {
         when {
@@ -140,19 +138,21 @@ class JActivity : AppCompatActivity(), Callback {
 
     data class LoginData (
         val token : String = "",
-        val expiresDate : Int = 0,
-        val total : Long = 0,
-        val used : Long = 0
+        val expiresDate : String = "0",
+        val total : String = "0",
+        val used : String = "0"
     )
 
-    private fun updateUI(expiresDate :Int,total :Long,used:Long) {
+    private var debug = 0
+
+    private fun updateUI(expiresDate :Long,total :Long,used:Long) {
         Log.v("J","${expiresDate},${total},${used}")
-        if (expiresDate == 0){
+        if (expiresDate == 0L){
             findViewById<TextView>(R.id.expireDateTextview).text = "欢迎光临！"
             findViewById<TextView>(R.id.trafficTextView).text = "大爷来玩啊~"
             findViewById<ProgressBar>(R.id.trafficProgressBar).visibility = View.INVISIBLE
-
-            findViewById<Button>(R.id.purshaseButton).text = "新用户免费领取使用大礼包"
+            findViewById<Button>(R.id.connect_button).visibility = View.INVISIBLE
+            findViewById<Button>(R.id.purshaseButton).text = "新用户点击领取使用大礼包"
             findViewById<Button>(R.id.purshaseButton).setOnClickListener{
                 val post = ViewModelProvider(this).get<HttpPost>()
                 post.post("https://frp.u03013112.win:18022/v1/android/buyTest","""
@@ -162,7 +162,7 @@ class JActivity : AppCompatActivity(), Callback {
                             Log.v("J",str)
                             toast("领取成功!")
                             val d = Gson().fromJson(str, LoginData::class.java)
-                            updateUI(d.expiresDate,d.total,d.used)
+                            updateUI(d.expiresDate.toLong(),d.total.toLong(),d.used.toLong())
                             return@post
                         }, {
                     err -> Log.e("J", err)
@@ -172,7 +172,7 @@ class JActivity : AppCompatActivity(), Callback {
             }
         }else {
             var calendar = Calendar.getInstance()
-            calendar.timeInMillis = expiresDate.toLong() * 1000
+            calendar.timeInMillis = expiresDate * 1000
             Log.v("J",calendar.time.toString())
             findViewById<TextView>(R.id.expireDateTextview).text = "有效期至：${SimpleDateFormat("yyyy年MM月dd日HH:mm:ss").format(calendar.time)}"
             findViewById<TextView>(R.id.trafficTextView).text = "已用流量/共有流量:${Formatter.formatFileSize(this, used)}/${Formatter.formatFileSize(this, total)}"
@@ -181,10 +181,17 @@ class JActivity : AppCompatActivity(), Callback {
             } else {
                 0
             }
+            findViewById<Button>(R.id.connect_button).visibility = View.VISIBLE
             findViewById<Button>(R.id.purshaseButton).text = "购买流量"
             findViewById<ProgressBar>(R.id.trafficProgressBar).visibility = View.VISIBLE
             findViewById<Button>(R.id.purshaseButton).setOnClickListener{
-                longToast("内测阶段，暂不开放")
+                debug ++
+                if (debug > 10) {
+                    longToast("测试模式:${DataStore.token}")
+                } else {
+                    longToast("内测阶段，暂不开放")
+                }
+
             }
         }
     }
@@ -195,16 +202,14 @@ class JActivity : AppCompatActivity(), Callback {
         val post = ViewModelProvider(this).get<HttpPost>()
         post.post("https://frp.u03013112.win:18022/v1/android/login","{\"uuid\":\"${androidID}\"}",
             {str ->
-                Log.v("J",str)
+                Log.e("J",str)
                 toast("登陆成功!")
                 val d = Gson().fromJson(str, LoginData::class.java)
-
+                Log.e("J",d.toString())
                 val token = d.token
-
-                Log.v("J","token:"+token)
+                Log.v("J","token:${token}")
                 DataStore.token = token
-                updateUI(d.expiresDate,d.total,d.used)
-//                getVPNConfig()
+                updateUI(d.expiresDate.toLong(),d.total.toLong(),d.used.toLong())
                 return@post
             }, {
                 err -> Log.e("J", err)
@@ -219,7 +224,8 @@ class JActivity : AppCompatActivity(), Callback {
         val port : String = "",
         val method : String = "",
         val passwd : String = "",
-        val expiresDate : String = ""
+        val expiresDate : String = "",
+        val error: String = ""
     )
     private  fun getVPNConfig() {
         var post = ViewModelProvider(this).get<HttpPost>()
@@ -227,6 +233,12 @@ class JActivity : AppCompatActivity(), Callback {
             {str ->
                 Log.v("J",str)
                 val d = Gson().fromJson(str, VPNConfig::class.java)
+
+                if (d.error != ""){
+                    longToast(d.error)
+                    return@post
+                }
+
                 this.profile.host=d.IP
                 this.profile.remotePort=d.port.toInt()
                 this.profile.password=d.passwd
