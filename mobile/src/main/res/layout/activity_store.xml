@@ -6,7 +6,31 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".StoreActivity">
-    <include layout="@layout/toolbar_light_dark"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="30dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="购买流量"
+            android:textSize="30dp"
+            android:textColor="@color/color_green"
+            android:gravity="center"
+            >
+        </TextView>
+        <TextView
+            android:id="@+id/wait"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="请稍后..."
+            android:textSize="30dp"
+            android:gravity="center"
+            ></TextView>
+
+    </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView android:id="@+id/list"
         tools:listitem="@layout/layout_production"
         android:layout_width="match_parent"
@@ -14,6 +38,6 @@
         android:layout_weight="1"
         android:scrollbars="vertical"
         android:clipChildren="false"
-        android:clipToPadding="false"/>
+        />
 
 </LinearLayout>
