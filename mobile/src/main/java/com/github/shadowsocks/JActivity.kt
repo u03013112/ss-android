@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.get
 import androidx.lifecycle.observe
+import com.github.shadowsocks.acl.Acl
 import com.github.shadowsocks.aidl.IShadowsocksService
 import com.github.shadowsocks.aidl.ShadowsocksConnection
 import com.github.shadowsocks.aidl.ShadowsocksConnection.Callback
@@ -35,6 +36,7 @@ import com.github.shadowsocks.preference.DataStore
 import com.github.shadowsocks.utils.Key
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
+import kotlinx.android.synthetic.main.activity_j.*
 import kotlinx.android.synthetic.main.layout_apps.*
 import kotlinx.android.synthetic.main.layout_apps.view.*
 import org.jetbrains.anko.*
@@ -43,7 +45,6 @@ import java.util.*
 
 class JActivity : AppCompatActivity(), Callback {
 
-    lateinit var testButton : Button
     lateinit var connectButton: Button
     lateinit var profile : Profile
 
@@ -64,6 +65,21 @@ class JActivity : AppCompatActivity(), Callback {
         connection.bandwidthTimeout = 1000
 
         login()
+        updateZhi()
+
+        zhinengshangwang_switch.setOnClickListener{
+
+            if (this.profile != null && this.profile.route == Acl.GFWLIST){
+//                全局模式
+                this.profile.route = Acl.ALL
+                ProfileManager.updateProfile(this.profile)
+            }else{
+//                智能模式
+                this.profile.route = Acl.GFWLIST
+                ProfileManager.updateProfile(this.profile)
+            }
+            updateZhi()
+        }
     }
 
     private fun setStatus(text: CharSequence) {
@@ -106,6 +122,7 @@ class JActivity : AppCompatActivity(), Callback {
                 this.connectButton.background.setTint(Color.YELLOW)
             }
         }
+        updateZhi()
     }
 
     override fun trafficUpdated(profileId: Long, stats: TrafficStats) {
@@ -256,5 +273,23 @@ class JActivity : AppCompatActivity(), Callback {
                 }.show()
             }
         )
+    }
+
+    private fun updateZhi(){
+
+        zhinengshangwang_switch.isEnabled = (state == BaseService.State.Idle || state == BaseService.State.Stopped)
+
+        if (this.profile != null){
+            if (this.profile.route == Acl.ALL){
+                zhinengshangwang_text.setText("全局模式")
+                zhinengshangwang_help.setText("所有流量都将通过伟大的M神，包括国内流量，并计费。")
+            }else if (this.profile.route == Acl.GFWLIST){
+                zhinengshangwang_text.setText("智能模式")
+                zhinengshangwang_help.setText("只有海外流量会通过伟大的M神，并计费。")
+            }else{
+                zhinengshangwang_text.setText("")
+                zhinengshangwang_help.setText("")
+            }
+        }
     }
 }
