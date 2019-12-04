@@ -21,6 +21,13 @@
             android:gravity="center"
             >
         </TextView>
+        <Button
+            android:id="@+id/show_ad"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="免费领取1GB流量"
+            android:enabled="false"
+            ></Button>
         <TextView
             android:id="@+id/wait"
             android:layout_width="match_parent"

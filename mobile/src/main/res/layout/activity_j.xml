@@ -94,14 +94,21 @@
                     android:textColor="@color/color_blue"
                     >flow</TextView>
             </LinearLayout>
-            <TextView
-                android:layout_marginTop="30dp"
+<!--            <TextView-->
+<!--                android:layout_marginTop="30dp"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:gravity="center"-->
+<!--                android:text="科学上网内测版本\n每个新用户可以领取10GB流量进行测试\n内测第一阶段7天，祝大家玩的开心！"-->
+<!--                android:textSize="18sp"-->
+<!--                />-->
+            <Button
+                android:id="@+id/show_ad_j"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="科学上网内测版本\n每个新用户可以领取10GB流量进行测试\n内测第一阶段7天，祝大家玩的开心！"
-                android:textSize="18sp"
-                />
+                android:text="免费领取1GB流量"
+                android:enabled="false"
+                ></Button>
             <TextView
                 android:layout_marginTop="30dp"
                 android:layout_width="match_parent"

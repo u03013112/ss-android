@@ -14,7 +14,7 @@ buildscript {
         androidTestVersion = '1.2.0'
         androidEspressoVersion = '3.2.0'
         versionCode = 4080550
-        versionName = '4.8.5-nightly'
+        versionName = '0.0.1-test'
         resConfigs = ['ar', 'es', 'fa', 'fr', 'ja', 'ko', 'ru', 'tr', 'zh-rCN', 'zh-rTW']
     }
 

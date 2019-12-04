@@ -144,7 +144,7 @@ object BaseService {
                 secondCount++
 //                Log.v("J","updatePerSec"+ secondCount.toString())
 
-                if (DataStore.token != "" && secondCount % 30 == 0) {
+                if ( data !=null && data!!.state == State.Connected && secondCount % 30 == 0) {
                     val post = HttpPost()
                     val s = """
                         {"token":"${DataStore.token}","rx":${rx}}

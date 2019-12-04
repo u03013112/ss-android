@@ -34,21 +34,36 @@ import com.github.shadowsocks.net.HttpPost
 import com.github.shadowsocks.net.HttpsTest
 import com.github.shadowsocks.preference.DataStore
 import com.github.shadowsocks.utils.Key
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.reward.RewardItem
+import com.google.android.gms.ads.reward.RewardedVideoAd
+import com.google.android.gms.ads.reward.RewardedVideoAdListener
+import com.google.android.gms.ads.rewarded.RewardedAd
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import kotlinx.android.synthetic.main.activity_j.*
+import kotlinx.android.synthetic.main.activity_store.*
 import kotlinx.android.synthetic.main.layout_apps.*
 import kotlinx.android.synthetic.main.layout_apps.view.*
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk27.coroutines.onClick
 import java.text.SimpleDateFormat
 import java.util.*
 
-class JActivity : AppCompatActivity(), Callback {
+class JActivity : AppCompatActivity(), Callback , RewardedVideoAdListener {
 
     lateinit var connectButton: Button
     lateinit var profile : Profile
 
     var state = BaseService.State.Idle
+
+    private lateinit var mRewardedVideoAd: RewardedVideoAd
+
+//    private val rewardID = "ca-app-pub-3940256099942544/5224354917"
+//    private val rewardID = "ca-app-pub-7592917484201943/3235936578"
+    private var rewardID = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,6 +95,21 @@ class JActivity : AppCompatActivity(), Callback {
             }
             updateZhi()
         }
+        MobileAds.initialize(this) {}
+        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this)
+        mRewardedVideoAd.rewardedVideoAdListener = this
+
+        show_ad_j.onClick {
+            if (mRewardedVideoAd.isLoaded) {
+                mRewardedVideoAd.show()
+                show_ad_j.isEnabled = false
+            }
+        }
+    }
+
+    private fun loadRewardedVideoAd() {
+        mRewardedVideoAd.loadAd(rewardID, AdRequest.Builder().build())
+        Log.v("J","loadRewardedVideoAd:${rewardID}")
     }
 
     private fun setStatus(text: CharSequence) {
@@ -173,7 +203,7 @@ class JActivity : AppCompatActivity(), Callback {
             findViewById<Button>(R.id.purshaseButton).setOnClickListener{
                 val post = ViewModelProvider(this).get<HttpPost>()
                 post.post("https://frp.u03013112.win:18022/v1/android/buyTest","""
-                    {"token":"${DataStore.token}","prodectionID":1}
+                    {"token":"${DataStore.token}","prodectionID":7}
                 """.trimIndent(),
                         {str ->
                             Log.v("J",str)
@@ -206,8 +236,9 @@ class JActivity : AppCompatActivity(), Callback {
                 if (debug > 10) {
                     longToast("测试模式:${DataStore.token}")
                 } else {
-                    var intent : Intent = Intent(this,StoreActivity::class.java)
-                    startActivity(intent)
+//                    var intent : Intent = Intent(this,StoreActivity::class.java)
+//                    startActivity(intent)
+                    toast("内测阶段，暂未开放")
                 }
 
             }
@@ -223,11 +254,16 @@ class JActivity : AppCompatActivity(), Callback {
                 Log.e("J",str)
                 toast("登陆成功!")
                 val d = Gson().fromJson(str, LoginData::class.java)
+                if (d == null) {
+                    toast("d==null")
+                    return@post
+                }
                 Log.e("J",d.toString())
                 val token = d.token
                 Log.v("J","token:${token}")
                 DataStore.token = token
                 updateUI(d.expiresDate.toLong(),d.total.toLong(),d.used.toLong())
+                getGoogleAd()
                 return@post
             }, {
                 err -> Log.e("J", err)
@@ -291,5 +327,78 @@ class JActivity : AppCompatActivity(), Callback {
                 zhinengshangwang_help.setText("")
             }
         }
+    }
+
+    data class GetGoogleAdData (
+        val id:String = ""
+    )
+    private fun getGoogleAd() {
+        var post = ViewModelProvider(this).get<HttpPost>()
+        post.post("https://frp.u03013112.win:18022/v1/android/getGoogleAd","{\"token\":\"${DataStore.token}\"}",
+                {str ->
+                    Log.v("J",str)
+                    val d = Gson().fromJson(str, GetGoogleAdData::class.java)
+                    rewardID = d.id
+                    loadRewardedVideoAd()
+                    return@post
+                },
+                {err ->
+                    Log.e("J", err)
+                    toast("广告ID未找到。")
+                }
+        )
+    }
+
+    override fun onRewarded(reward: RewardItem) {
+//        longToast( "onRewarded! currency: ${reward.type} amount: ${reward.amount}")
+        // Reward the user.
+        val post = ViewModelProvider(this).get<HttpPost>()
+        post.post("https://frp.u03013112.win:18022/v1/android/buyTest","""
+                    {"token":"${DataStore.token}","prodectionID":7}
+                """.trimIndent(),
+                {str ->
+                    Log.v("J",str)
+                    toast("领取成功!")
+                    val d = Gson().fromJson(str, JActivity.LoginData::class.java)
+                    updateUI(d.expiresDate.toLong(),d.total.toLong(),d.used.toLong())
+                    return@post
+                }, {
+            err -> Log.e("J", err)
+            toast("登陆失败，正在重试!")
+        }
+        )
+    }
+
+    override fun onRewardedVideoAdLeftApplication() {
+//        toast("onRewardedVideoAdLeftApplication")
+    }
+
+    override fun onRewardedVideoAdClosed() {
+//        toast("onRewardedVideoAdClosed")
+        loadRewardedVideoAd()
+    }
+
+    override fun onRewardedVideoAdFailedToLoad(errorCode: Int) {
+        toast("onRewardedVideoAdFailedToLoad${errorCode}")
+        Log.v("J","onRewardedVideoAdFailedToLoad${errorCode}")
+        loadRewardedVideoAd()
+    }
+
+    override fun onRewardedVideoAdLoaded() {
+//        toast("onRewardedVideoAdLoaded")
+        Log.v("J","onRewardedVideoAdLoaded")
+        show_ad_j.isEnabled = true
+    }
+
+    override fun onRewardedVideoAdOpened() {
+//        toast("onRewardedVideoAdOpened")
+    }
+
+    override fun onRewardedVideoStarted() {
+//        toast("onRewardedVideoStarted")
+    }
+
+    override fun onRewardedVideoCompleted() {
+//        toast("onRewardedVideoCompleted")
     }
 }

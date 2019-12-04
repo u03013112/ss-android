@@ -75,6 +75,7 @@ dependencies {
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "androidx.test:runner:$androidTestVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidEspressoVersion"
+    implementation 'com.google.android.gms:play-services-ads:18.3.0'
 }
 repositories {
     mavenCentral()
