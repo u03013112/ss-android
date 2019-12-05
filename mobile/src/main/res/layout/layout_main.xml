@@ -24,7 +24,7 @@
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:elevation="6dp"
+        android:elevation="1dp"
         android:nextFocusDown="@+id/stats"
         app:layout_anchor="@id/stats"
         app:backgroundTint="@color/background_service"

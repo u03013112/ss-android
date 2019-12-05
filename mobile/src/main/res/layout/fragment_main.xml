@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainFragment">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="50dp">
+        <TextView
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="@color/color_green"
+            android:text="@string/choose_line" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/default_line"
+            android:textColor="@color/green"
+            android:textSize="20sp" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
+
+        <TextView
+            android:layout_marginTop="20dp"
+            android:id="@+id/zhinengshangwang_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/all_proxy"
+            android:textSize="20sp"
+            android:textColor="@color/color_green"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:background="@color/browser_actions_bg_grey"
+            >
+            <MultiAutoCompleteTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="所有流量都将通过伟大的M神，包括国内流量，并计费。"
+                android:layout_weight="8"
+                />
+
+            <Switch
+                android:id="@+id/zhinengshangwang_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:saveEnabled="true"
+                android:textSize="20sp"
+                android:layout_weight="2"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</FrameLayout>

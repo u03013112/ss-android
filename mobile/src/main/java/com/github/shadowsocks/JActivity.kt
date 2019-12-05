@@ -19,7 +19,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.TooltipCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
+//import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.get
 import androidx.lifecycle.observe
 import com.github.shadowsocks.acl.Acl
@@ -84,7 +84,7 @@ class JActivity : AppCompatActivity(), Callback , RewardedVideoAdListener {
 
         zhinengshangwang_switch.setOnClickListener{
 
-            if (this.profile != null && this.profile.route == Acl.GFWLIST){
+            if (this.profile.route == Acl.GFWLIST){
 //                全局模式
                 this.profile.route = Acl.ALL
                 ProfileManager.updateProfile(this.profile)
@@ -151,6 +151,9 @@ class JActivity : AppCompatActivity(), Callback , RewardedVideoAdListener {
                 this.connectButton.setTextColor(Color.RED)
                 this.connectButton.background.setTint(Color.YELLOW)
             }
+        }
+        if (msg != null){
+            Log.v("J","msg:${msg},animate:${animate}")
         }
         updateZhi()
     }
@@ -315,17 +318,15 @@ class JActivity : AppCompatActivity(), Callback , RewardedVideoAdListener {
 
         zhinengshangwang_switch.isEnabled = (state == BaseService.State.Idle || state == BaseService.State.Stopped)
 
-        if (this.profile != null){
-            if (this.profile.route == Acl.ALL){
-                zhinengshangwang_text.setText("全局模式")
-                zhinengshangwang_help.setText("所有流量都将通过伟大的M神，包括国内流量，并计费。")
-            }else if (this.profile.route == Acl.GFWLIST){
-                zhinengshangwang_text.setText("智能模式")
-                zhinengshangwang_help.setText("只有海外流量会通过伟大的M神，并计费。")
-            }else{
-                zhinengshangwang_text.setText("")
-                zhinengshangwang_help.setText("")
-            }
+        if (this.profile.route == Acl.ALL){
+            zhinengshangwang_text.setText("全局模式")
+            zhinengshangwang_help.setText("所有流量都将通过伟大的M神，包括国内流量，并计费。")
+        }else if (this.profile.route == Acl.GFWLIST){
+            zhinengshangwang_text.setText("智能模式")
+            zhinengshangwang_help.setText("只有海外流量会通过伟大的M神，并计费。")
+        }else{
+            zhinengshangwang_text.setText("")
+            zhinengshangwang_help.setText("")
         }
     }
 

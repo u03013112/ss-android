@@ -3,4 +3,14 @@
     <string name="title_activity_store">StoreActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="setting">设置</string>
+    <string name="about">关于</string>
+    <string name="choose_line">选择线路</string>
+    <string name="default_line">默认线路</string>
+    <string name="all_proxy">全局代理</string>
+    <string name="gfw_proxy">智能代理</string>
 </resources>
