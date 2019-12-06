@@ -13,4 +13,6 @@
     <string name="default_line">默认线路</string>
     <string name="all_proxy">全局代理</string>
     <string name="gfw_proxy">智能代理</string>
+    <string name="all_proxy_help">全部流量都经过科学的方式处理。</string>
+    <string name="gfw_proxy_help">只有周知的境外流量通过科学的方式处理，国内推荐。</string>
 </resources>
