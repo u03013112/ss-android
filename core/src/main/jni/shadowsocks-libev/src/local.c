@@ -1,22 +1,22 @@
 /*
- * local.c - Setup a socks5 proxy through remote shadowsocks server
+ * local.c - Setup a socks5 proxy through remote ss server
  *
  * Copyright (C) 2013 - 2019, Max Lv <max.c.lv@gmail.com>
  *
- * This file is part of the shadowsocks-libev.
+ * This file is part of the ss-libev.
  *
- * shadowsocks-libev is free software; you can redistribute it and/or modify
+ * ss-libev is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
- * shadowsocks-libev is distributed in the hope that it will be useful,
+ * ss-libev is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with shadowsocks-libev; see the file COPYING. If not, see
+ * along with ss-libev; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 
@@ -40,7 +40,7 @@
 #include <netinet/in.h>
 #endif
 #ifdef LIB_ONLY
-#include "shadowsocks.h"
+#include "ss.h"
 #endif
 
 #if defined(HAVE_SYS_IOCTL_H) && defined(HAVE_NET_IF_H) && defined(__linux__)
@@ -637,7 +637,7 @@ server_stream(EV_P_ ev_io *w, buffer_t *buf)
         return;
     }
 
-    // insert shadowsocks header
+    // insert ss header
     if (!remote->direct) {
 #ifdef __ANDROID__
         tx += remote->buf->len;

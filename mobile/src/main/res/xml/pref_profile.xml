@@ -73,7 +73,7 @@
     <PreferenceCategory
             app:title="@string/plugin">
 
-        <com.github.shadowsocks.preference.IconListPreference
+        <com.github.ss.preference.IconListPreference
                 app:key="plugin"
                 app:persistent="false"
                 app:title="@string/plugin"
@@ -89,8 +89,8 @@
                 app:key="udpFallback"
                 app:title="@string/udp_fallback"
                 app:summary="@string/plugin_disabled">
-            <intent android:targetPackage="com.github.shadowsocks"
-                    android:targetClass="com.github.shadowsocks.UdpFallbackProfileActivity"/>
+            <intent android:targetPackage="com.github.ss"
+                    android:targetClass="com.github.ss.UdpFallbackProfileActivity"/>
         </Preference>
 
     </PreferenceCategory>

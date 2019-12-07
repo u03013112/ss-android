@@ -1,7 +1,7 @@
 base: core18
-name: shadowsocks-libev
+name: ss-libev
 version: 3.2.5-1
-summary: libev port of shadowsocks
+summary: libev port of ss
 description: |
   Shadowsocks-libev is a lightweight and secure SOCKS5 proxy for embedded
   devices and low-end boxes.
@@ -35,12 +35,12 @@ apps:
 passthrough:
   layout:
     /etc/shadowsocks-libev:
-      bind: $SNAP_COMMON/etc/shadowsocks-libev
+      bind: $SNAP_COMMON/etc/ss-libev
 
 parts:
  shadowsocks-libev:
     plugin: autotools
-    source: https://github.com/shadowsocks/shadowsocks-libev/releases/download/v3.2.5/shadowsocks-libev-3.2.5.tar.gz
+    source: https://github.com/ss/ss-libev/releases/download/v3.2.5/ss-libev-3.2.5.tar.gz
     build-packages:
       - libpcre3-dev
       - asciidoc

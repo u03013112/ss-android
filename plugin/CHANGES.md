@@ -9,7 +9,7 @@
     - `com.google.android.material:material:1.1.0-alpha09`;
     - `org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.41`.
 * 1.3.0:
-  * Optional new metadata `com.github.shadowsocks.plugin.executable_path` for even faster initialization;
+  * Optional new metadata `ss.plugin.executable_path` for even faster initialization;
     (see doc for `PluginContract.METADATA_KEY_EXECUTABLE_PATH` for more information)
   * Breaking API change: `val AlertDialogFragment.ret: Ret?` => `fun AlertDialogFragment.ret(which: Int): Ret?`;
     (nothing needs to be done if you are not using this API)

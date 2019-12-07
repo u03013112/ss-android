@@ -3,20 +3,20 @@
  *
  * Copyright (C) 2013 - 2019, Max Lv <max.c.lv@gmail.com>
  *
- * This file is part of the shadowsocks-libev.
+ * This file is part of the ss-libev.
  *
- * shadowsocks-libev is free software; you can redistribute it and/or modify
+ * ss-libev is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
- * shadowsocks-libev is distributed in the hope that it will be useful,
+ * ss-libev is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with shadowsocks-libev; see the file COPYING. If not, see
+ * along with ss-libev; see the file COPYING. If not, see
  * <http://www.gnu.org/licenses/>.
  */
 
@@ -286,7 +286,7 @@ void
 usage()
 {
     printf("\n");
-    printf("shadowsocks-libev %s\n\n", VERSION);
+    printf("ss-libev %s\n\n", VERSION);
     printf(
         "  maintained by Max Lv <max.c.lv@gmail.com> and Linus Yang <laokongzi@gmail.com>\n\n");
     printf("  usage:\n\n");
@@ -516,7 +516,7 @@ char *
 get_default_conf(void)
 {
 #ifndef __MINGW32__
-    static char sysconf[] = "/etc/shadowsocks-libev/config.json";
+    static char sysconf[] = "/etc/ss-libev/config.json";
     static char *userconf = NULL;
     static int buf_size   = 0;
     char *conf_home;
@@ -531,14 +531,14 @@ get_default_conf(void)
             userconf = malloc(buf_size);
         }
         snprintf(userconf, buf_size, "%s%s", getenv("HOME"),
-                 "/.config/shadowsocks-libev/config.json");
+                 "/.config/ss-libev/config.json");
     } else {
         if (buf_size == 0) {
             buf_size = 50 + strlen(conf_home);
             userconf = malloc(buf_size);
         }
         snprintf(userconf, buf_size, "%s%s", conf_home,
-                 "/shadowsocks-libev/config.json");
+                 "/ss-libev/config.json");
     }
 
     // Check if the user-specific config exists.

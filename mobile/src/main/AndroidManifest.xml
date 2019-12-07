@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.github.shadowsocks"
+    package="com.github.ss"
     tools:ignore="MissingLeanbackSupport">
 
     <uses-feature
@@ -9,9 +9,9 @@
         android:required="false" />
 
     <application
-        android:name=".App"
+        android:name="com.github.ss.App"
         tools:ignore="MissingTvBanner">
-        <activity android:name=".JNewActivity">
+        <activity android:name="com.github.ss.JNewActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -76,7 +76,7 @@
         <!-- </intent-filter> -->
         <!-- </activity> -->
         <activity
-            android:name=".QuickToggleShortcut"
+            android:name="com.github.ss.QuickToggleShortcut"
             android:excludeFromRecents="true"
             android:label="@string/quick_toggle"
             android:process=":bg"
@@ -88,7 +88,7 @@
         </activity>
 
         <service
-            android:name=".bg.TileService"
+            android:name="com.github.ss.bg.TileService"
             android:directBootAware="true"
             android:icon="@drawable/ic_money"
             android:label="@string/quick_toggle"
@@ -101,7 +101,7 @@
         </service>
 
         <receiver
-            android:name=".tasker.ActionListener"
+            android:name="com.github.ss.tasker.ActionListener"
             android:directBootAware="true"
             android:process=":bg"
             tools:ignore="ExportedReceiver">
