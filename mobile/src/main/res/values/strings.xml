@@ -15,4 +15,7 @@
     <string name="gfw_proxy">智能代理</string>
     <string name="all_proxy_help">全部流量都经过科学的方式处理。</string>
     <string name="gfw_proxy_help">只有周知的境外流量通过科学的方式处理，国内推荐。</string>
+    <string name="status_stop">状态：未连接</string>
+    <string name="status_doing">状态：正在连接</string>
+    <string name="status_start">状态：已连接</string>
 </resources>
