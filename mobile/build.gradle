@@ -60,7 +60,7 @@ androidExtensions {
 
 dependencies {
     implementation project(':core')
-    implementation 'androidx.browser:browser:1.2.0-alpha09'
+    implementation 'androidx.browser:browser:1.2.0-beta01'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta3'
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-rc02"
     implementation 'com.google.android.gms:play-services-vision:19.0.0'

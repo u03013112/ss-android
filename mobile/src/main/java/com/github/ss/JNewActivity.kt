@@ -25,6 +25,7 @@ import com.github.ss.net.HttpPost
 import com.github.ss.preference.DataStore
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
+//import com.up.ads.UPAdsSdk
 import kotlinx.android.synthetic.main.activity_j_new.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.image
@@ -33,6 +34,15 @@ import org.jetbrains.anko.sdk27.coroutines.onClick
 import org.jetbrains.anko.toast
 import java.text.SimpleDateFormat
 import java.util.*
+//import android.Manifest.permission.READ_PHONE_STATE
+//import android.Manifest.permission.REQUEST_INSTALL_PACKAGES
+//import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+//import androidx.core.app.ActivityCompat
+//import android.content.pm.PackageManager
+//import androidx.core.content.ContextCompat
+//import android.os.Build
+
+
 
 class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback {
     var viewPager: ViewPager? = null
@@ -40,6 +50,8 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback {
 
     var state = BaseService.State.Idle
     lateinit var profile : Profile
+
+    var mainFragment : MainFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,7 +70,30 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback {
         connection.connect(this, this)
         connection.bandwidthTimeout = 1000
         login()
+
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            if (ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+//                    || ContextCompat.checkSelfPermission(this, REQUEST_INSTALL_PACKAGES) != PackageManager.PERMISSION_GRANTED
+//                    || ContextCompat.checkSelfPermission(this, READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+//                ActivityCompat.requestPermissions(this, arrayOf(WRITE_EXTERNAL_STORAGE, REQUEST_INSTALL_PACKAGES, READ_PHONE_STATE), 1)
+//            }
+//        }
+//        UPAdsSdk.init(this,UPAdsSdk.UPAdsGlobalZone.UPAdsGlobalZoneDomestic)
     }
+
+//    这个为什么重写，没看懂
+//    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+//    }
+//    override fun onPause() {
+//        super.onPause()
+//        UPAdsSdk.onApplicationPause()
+//    }
+//    override fun onResume() {
+//        super.onResume()
+//        UPAdsSdk.onApplicationResume()
+//    }
 
     private fun setupViewPager(viewPager: ViewPager) {
         val adapter = FragmentAdapter(supportFragmentManager)
@@ -146,11 +181,13 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback {
         if (msg != null){
             Log.v("J","msg:${msg},animate:${animate}")
         }
-//        updateZhi()
+
+        mainFragment?.updateZhi()
     }
 
     override fun trafficUpdated(profileId: Long, stats: TrafficStats) {
         Log.e("J","trafficUpdated")
+        netflow_speed_textView.visibility = View.VISIBLE
         if (profileId == 0L){
             netflow_speed_textView.text = "▲   ${Formatter.formatFileSize(this, stats.txRate)}/s\n▼   ${Formatter.formatFileSize(this, stats.rxRate)}/s"
         }
@@ -194,7 +231,7 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback {
             op_button.visibility = View.GONE
             op_button.onClick { }
             Log.v("J",calendar.time.toString())
-            netflow_use_textView.text = "有效期至：\n${SimpleDateFormat("yyyy-MM-dd\nHH:mm:ss").format(calendar.time)}\n拥有流量：${Formatter.formatFileSize(this, total)}\n已用流量：${Formatter.formatFileSize(this, used)}"
+            netflow_use_textView.text = "有效期至：\n${SimpleDateFormat("yyyy-MM-dd\nHH:mm:ss").format(calendar.time)}\n拥有流量：${Formatter.formatFileSize(this, total)}\n已用：${Formatter.formatFileSize(this, used)}"
         }
     }
 
