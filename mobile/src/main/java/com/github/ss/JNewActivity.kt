@@ -70,30 +70,7 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback {
         connection.connect(this, this)
         connection.bandwidthTimeout = 1000
         login()
-
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            if (ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-//                    || ContextCompat.checkSelfPermission(this, REQUEST_INSTALL_PACKAGES) != PackageManager.PERMISSION_GRANTED
-//                    || ContextCompat.checkSelfPermission(this, READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-//                ActivityCompat.requestPermissions(this, arrayOf(WRITE_EXTERNAL_STORAGE, REQUEST_INSTALL_PACKAGES, READ_PHONE_STATE), 1)
-//            }
-//        }
-//        UPAdsSdk.init(this,UPAdsSdk.UPAdsGlobalZone.UPAdsGlobalZoneDomestic)
     }
-
-//    这个为什么重写，没看懂
-//    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-//    }
-//    override fun onPause() {
-//        super.onPause()
-//        UPAdsSdk.onApplicationPause()
-//    }
-//    override fun onResume() {
-//        super.onResume()
-//        UPAdsSdk.onApplicationResume()
-//    }
 
     private fun setupViewPager(viewPager: ViewPager) {
         val adapter = FragmentAdapter(supportFragmentManager)
@@ -253,6 +230,7 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback {
                     Log.v("J","token:${token}")
                     DataStore.token = token
                     updateUI(d.expiresDate.toLong(),d.total.toLong(),d.used.toLong())
+                    mainFragment?.getLineList()
                     return@post
                 }, {
             err -> Log.e("J", err)

@@ -5,6 +5,7 @@
 
     <color name="black_overlay">#66000000</color>
     <color name="yellow">#FFEB3B</color>
+    <color name="red">#C34A4A</color>
     <color name="green">#8BC34A</color>
     <color name="white">#F7F8F9</color>
     <color name="black">#000000</color>
