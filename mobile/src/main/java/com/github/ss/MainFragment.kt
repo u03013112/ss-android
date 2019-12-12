@@ -1,5 +1,6 @@
 package com.github.ss
 
+import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
@@ -28,13 +29,24 @@ import org.jetbrains.anko.sdk27.coroutines.onClick
 import org.jetbrains.anko.support.v4.longToast
 import org.jetbrains.anko.support.v4.toast
 import org.jetbrains.anko.toast
+import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
+import org.jetbrains.anko.alert
+import org.jetbrains.anko.support.v4.alert
+
 
 class MainFragment : Fragment() {
     lateinit var act : JNewActivity
+    lateinit var sharedPreferences : SharedPreferences
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         act = activity as JNewActivity
+        sharedPreferences = act.getSharedPreferences("defalut", MODE_PRIVATE)
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
+
+    private val lineIDKey = "lineIDKey"
+    private var lineId = 0
+    private var lineName = ""
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         act.mainFragment = this
@@ -76,10 +88,10 @@ class MainFragment : Fragment() {
         }
     }
     data class getLineData(
-            val id : String = "",
-            val name : String = "",
-            val address : String = "",
-            val description : String = ""
+        val id : String = "",
+        val name : String = "",
+        val address : String = "",
+        val description : String = ""
     )
     data class getLineListData(
             val error : String = "",
@@ -103,9 +115,23 @@ class MainFragment : Fragment() {
                         updateLineButton()
                         return@post
                     }
+
+                    var id = sharedPreferences.getString(lineIDKey,"")
+                    var lineIdOk = false
                     for (line in d.list) {
                         prodectionList.add(line)
+                        if (line.id == id){
+                            lineIdOk = true
+                            lineName = line.name
+                            lineId = line.id.toInt()
+                        }
                     }
+                    if (lineIdOk == false) {
+                        sharedPreferences.edit().putString(lineIDKey,prodectionList[0].id)
+                        lineName = prodectionList[0].name
+                        lineId = prodectionList[0].id.toInt()
+                    }
+
                     initRecyclerView()
                     updateLineButton()
                     return@post
@@ -116,13 +142,15 @@ class MainFragment : Fragment() {
     }
 
     fun updateLineButton(){
+        line_button.isEnabled = (act.state == BaseService.State.Idle || act.state == BaseService.State.Stopped)
+
         if (prodectionList.count() <= 0) {
             line_button.text = "无线路"
             line_button.onClick {
                 getLineList()
             }
         }else{
-            line_button.text = "有线路"
+            line_button.text = lineName
             line_button.onClick {
                 line_list.visibility = View.VISIBLE
             }
@@ -165,18 +193,51 @@ class MainFragment : Fragment() {
         }
 
         inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView),View.OnClickListener {
-            var id = 0
+            var id = ""
             fun bind(line : getLineData) {
                 itemView.line_name.setText(line.name)
                 itemView.line_address.setText(line.address)
                 itemView.line_desc.setText(line.description)
-                id = line.id.toInt()
+                id = line.id
                 itemView.setOnClickListener(this)
             }
             override fun onClick(v: View?) {
-                longToast("内测阶段，暂不支持支付")
-                Log.v("J",id.toString())
+                Log.v("J","线路被选择:${id}")
+                sharedPreferences.edit().putString(lineIDKey,id).apply()
+                lineId = id.toInt()
+                lineName = itemView.line_name.text.toString()
+                line_list.visibility = View.GONE
+                updateLineButton()
             }
         }
+    }
+    fun startWithLineConfig() {
+        var post = ViewModelProvider(this).get<HttpPost>()
+        post.post("https://frp.u03013112.win:18022/v1/config/get-line-config","{\"token\":\"${DataStore.token}\",\"id\":${lineId}}",
+            {str ->
+                Log.v("J",str)
+                val d = Gson().fromJson(str, JActivity.VPNConfig::class.java)
+
+                if (d.error != ""){
+                    longToast(d.error)
+                    return@post
+                }
+
+                act.profile.host=d.IP
+                act.profile.remotePort=d.port.toInt()
+                act.profile.password=d.passwd
+                act.profile.method=d.method
+                ProfileManager.updateProfile(act.profile)
+
+                Core.startService()
+                return@post
+            },
+            {err ->
+                Log.e("J", err)
+                alert("连接服务器失败", "尊敬的用户") {
+                    positiveButton("重试") { startWithLineConfig() }
+                }.show()
+            }
+        )
     }
 }

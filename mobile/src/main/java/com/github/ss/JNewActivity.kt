@@ -87,8 +87,9 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback {
                 netflow_speed_textView.visibility = View.INVISIBLE
             }
             else -> {
-                getVPNConfig()
-                netflow_speed_textView.visibility = View.VISIBLE
+//                getVPNConfig()
+//                netflow_speed_textView.visibility = View.VISIBLE
+                mainFragment?.startWithLineConfig()
             }
         }
     }
@@ -160,10 +161,11 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback {
         }
 
         mainFragment?.updateZhi()
+        mainFragment?.updateLineButton()
     }
 
     override fun trafficUpdated(profileId: Long, stats: TrafficStats) {
-        Log.e("J","trafficUpdated")
+//        Log.e("J","trafficUpdated")
         netflow_speed_textView.visibility = View.VISIBLE
         if (profileId == 0L){
             netflow_speed_textView.text = "▲   ${Formatter.formatFileSize(this, stats.txRate)}/s\n▼   ${Formatter.formatFileSize(this, stats.rxRate)}/s"
