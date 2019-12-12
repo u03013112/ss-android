@@ -19,7 +19,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="老王VPN"
+                android:text="孟婆VPN"
                 android:textSize="14sp"
                 android:textColor="@color/white"
                 android:background="@color/color_primary"
@@ -32,7 +32,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="挺老王"
+                android:text="挺孟姜女"
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:background="@color/color_primary"
@@ -93,7 +93,7 @@
                     android:src="@drawable/ic_close"
                     android:background="@drawable/round"
                     android:padding="100dp"
-                    android:backgroundTint="@color/color_primary" />
+                    android:backgroundTint="@color/color_green" />
                 <TextView
                     android:id="@+id/netflow_use_textView"
                     android:layout_weight="1"

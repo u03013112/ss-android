@@ -31,6 +31,7 @@ import org.jetbrains.anko.support.v4.toast
 import org.jetbrains.anko.toast
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import kotlinx.android.synthetic.main.activity_j_new.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.support.v4.alert
 
@@ -112,6 +113,11 @@ class MainFragment : Fragment() {
                     if (d.error != null && d.error != ""){
                         longToast(d.error)
                         Log.e("J", "error:${d.error}")
+                        if (d.error == "expired"){
+                            act.status_button.text = "状态：已过期，请及时续费"
+                        }else if (d.error == "outOfTraffic"){
+                            act.status_button.text = "状态：流量不足，请及时续费"
+                        }
                         updateLineButton()
                         return@post
                     }
@@ -126,7 +132,7 @@ class MainFragment : Fragment() {
                             lineId = line.id.toInt()
                         }
                     }
-                    if (lineIdOk == false) {
+                    if (lineIdOk == false && prodectionList.size > 0) {
                         sharedPreferences.edit().putString(lineIDKey,prodectionList[0].id)
                         lineName = prodectionList[0].name
                         lineId = prodectionList[0].id.toInt()
