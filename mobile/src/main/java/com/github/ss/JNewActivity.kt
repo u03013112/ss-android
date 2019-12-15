@@ -23,28 +23,22 @@ import com.github.ss.database.Profile
 import com.github.ss.database.ProfileManager
 import com.github.ss.net.HttpPost
 import com.github.ss.preference.DataStore
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.reward.RewardItem
+import com.google.android.gms.ads.reward.RewardedVideoAd
+import com.google.android.gms.ads.reward.RewardedVideoAdListener
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
-//import com.up.ads.UPAdsSdk
 import kotlinx.android.synthetic.main.activity_j_new.*
-import org.jetbrains.anko.alert
-import org.jetbrains.anko.image
-import org.jetbrains.anko.longToast
+import kotlinx.coroutines.*
+import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk27.coroutines.onClick
-import org.jetbrains.anko.toast
 import java.text.SimpleDateFormat
 import java.util.*
-//import android.Manifest.permission.READ_PHONE_STATE
-//import android.Manifest.permission.REQUEST_INSTALL_PACKAGES
-//import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-//import androidx.core.app.ActivityCompat
-//import android.content.pm.PackageManager
-//import androidx.core.content.ContextCompat
-//import android.os.Build
+import android.content.DialogInterface
 
-
-
-class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback {
+class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback, RewardedVideoAdListener {
     var viewPager: ViewPager? = null
     private var tabLayout: TabLayout? = null
 
@@ -52,6 +46,11 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback {
     lateinit var profile : Profile
 
     var mainFragment : MainFragment? = null
+
+    private var rewardID = ""
+    private lateinit var mRewardedVideoAd: RewardedVideoAd
+
+    lateinit var webviewDialog: WebviewDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,6 +69,35 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback {
         connection.connect(this, this)
         connection.bandwidthTimeout = 1000
         login()
+
+        MobileAds.initialize(this) {}
+        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this)
+        mRewardedVideoAd.rewardedVideoAdListener = this
+
+        updateAdButton()
+
+        initWebviewDialog()
+
+        zanzhu_button.onClick {
+            webviewDialog.setUrl("https://frp.u03013112.win:18022/htmls/ss-html/#/zan")
+            webviewDialog.show()
+        }
+    }
+
+    private val dialogHeight = 460f
+    private fun initWebviewDialog() {
+        webviewDialog = WebviewDialog(this)
+        webviewDialog.setContentView(R.layout.layout_webview_dialog)
+        webviewDialog.setDialogHeight(dialogHeight)
+
+        webviewDialog.setOnDismissListener(DialogInterface.OnDismissListener { dialog ->
+            Log.i("TAG", "cancel Dialog dismiss")
+        })
+    }
+
+    private fun loadRewardedVideoAd() {
+        mRewardedVideoAd.loadAd(rewardID, AdRequest.Builder().build())
+        Log.v("J","loadRewardedVideoAd:${rewardID}")
     }
 
     private fun setupViewPager(viewPager: ViewPager) {
@@ -160,6 +188,7 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback {
             Log.v("J","msg:${msg},animate:${animate}")
         }
 
+        updateAdButton()
         mainFragment?.updateZhi()
         mainFragment?.updateLineButton()
     }
@@ -233,6 +262,9 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback {
                     DataStore.token = token
                     updateUI(d.expiresDate.toLong(),d.total.toLong(),d.used.toLong())
                     mainFragment?.getLineList()
+
+                    getGoogleAd()
+                    showHello()
                     return@post
                 }, {
             err -> Log.e("J", err)
@@ -240,5 +272,108 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback {
             login()
         }
         )
+    }
+
+    data class GetGoogleAdData (
+            val id:String = ""
+    )
+    private fun getGoogleAd() {
+        var post = ViewModelProvider(this).get<HttpPost>()
+        post.post("https://frp.u03013112.win:18022/v1/android/getGoogleAd","{\"token\":\"${DataStore.token}\"}",
+                {str ->
+                    Log.v("J",str)
+                    val d = Gson().fromJson(str, GetGoogleAdData::class.java)
+                    rewardID = d.id
+                    loadRewardedVideoAd()
+                    return@post
+                },
+                {err ->
+                    Log.e("J", err)
+                    toast("广告ID未找到。")
+                }
+        )
+    }
+
+    override fun onRewarded(reward: RewardItem) {
+//        longToast( "onRewarded! currency: ${reward.type} amount: ${reward.amount}")
+        // Reward the user.
+        val post = ViewModelProvider(this).get<HttpPost>()
+        post.post("https://frp.u03013112.win:18022/v1/android/buyTest","""
+                    {"token":"${DataStore.token}","prodectionID":7}
+                """.trimIndent(),
+                {str ->
+                    Log.v("J",str)
+                    toast("领取成功!")
+                    val d = Gson().fromJson(str, JActivity.LoginData::class.java)
+                    updateUI(d.expiresDate.toLong(),d.total.toLong(),d.used.toLong())
+                    return@post
+                }, {
+            err -> Log.e("J", err)
+            toast("登陆失败，正在重试!")
+        }
+        )
+    }
+
+    override fun onRewardedVideoAdLeftApplication() {
+//        toast("onRewardedVideoAdLeftApplication")
+    }
+
+    override fun onRewardedVideoAdClosed() {
+//        toast("onRewardedVideoAdClosed")
+        loadRewardedVideoAd()
+    }
+
+    override fun onRewardedVideoAdFailedToLoad(errorCode: Int) {
+//        toast("onRewardedVideoAdFailedToLoad ${errorCode}")
+        Log.v("J","onRewardedVideoAdFailedToLoad ${errorCode}")
+        GlobalScope.launch{
+            delay(1000L)
+            withContext(Dispatchers.Main){
+                loadRewardedVideoAd()
+            }
+        }
+    }
+
+    override fun onRewardedVideoAdLoaded() {
+//        toast("onRewardedVideoAdLoaded")
+        Log.v("J","onRewardedVideoAdLoaded")
+        updateAdButton()
+    }
+
+    override fun onRewardedVideoAdOpened() {
+//        toast("onRewardedVideoAdOpened")
+    }
+
+    override fun onRewardedVideoStarted() {
+//        toast("onRewardedVideoStarted")
+    }
+
+    override fun onRewardedVideoCompleted() {
+//        toast("onRewardedVideoCompleted")
+    }
+
+    fun updateAdButton() {
+        if (mRewardedVideoAd.isLoaded && (state == BaseService.State.Idle || state == BaseService.State.Stopped)) {
+            ad_button.setTextColor(resources.getColor(R.color.red))
+            ad_button.background.setTint(Color.YELLOW)
+            ad_button.onClick {
+                ad_button.setTextColor(resources.getColor(R.color.gray_drak))
+                ad_button.background.setTint(Color.LTGRAY)
+                ad_button.onClick { }
+                if (mRewardedVideoAd.isLoaded) {
+                    mRewardedVideoAd.show()
+                }
+            }
+        }else{
+            ad_button.setTextColor(resources.getColor(R.color.gray_drak))
+            ad_button.background.setTint(Color.LTGRAY)
+            status_button.onClick {
+            }
+        }
+    }
+
+    fun showHello() {
+        webviewDialog.setUrl("https://frp.u03013112.win:18022/htmls/ss-html/#/hello")
+        webviewDialog.show()
     }
 }

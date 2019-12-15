@@ -4,9 +4,12 @@
     <color name="background_stat">@color/material_primary_300</color>
 
     <color name="black_overlay">#66000000</color>
-    <color name="yellow">#FFEB3B</color>
+    <color name="gray_light">#E6E5E5</color>
+    <color name="gray_drak">#B8B8B8</color>
+    <color name="yellow">#F5DF20</color>
     <color name="red">#C34A4A</color>
     <color name="green">#8BC34A</color>
     <color name="white">#F7F8F9</color>
     <color name="black">#000000</color>
+    <color name="color_transparent">#00000000</color>
 </resources>

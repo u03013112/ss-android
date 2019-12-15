@@ -15,28 +15,31 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/color_primary"
+            android:padding="5dp"
             >
             <Button
-                android:layout_width="wrap_content"
+                android:id="@+id/ad_button"
+                android:backgroundTint="@color/gray_light"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="孟婆VPN"
+                android:text="免费获取流量"
                 android:textSize="14sp"
-                android:textColor="@color/white"
-                android:background="@color/color_primary"
-                android:layout_weight="2"
+                android:textColor="@color/gray_drak"
+                android:layout_weight="5"
                 />
             <Space
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="200"/>
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
             <Button
-                android:layout_width="wrap_content"
+                android:id="@+id/zanzhu_button"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="挺孟姜女"
+                android:text="赞助"
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:background="@color/color_primary"
-                android:layout_weight="2"
+                android:layout_weight="1.5"
                 />
             <Button
                 android:visibility="gone"

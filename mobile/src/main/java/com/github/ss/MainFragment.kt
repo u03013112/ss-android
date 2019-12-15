@@ -56,13 +56,13 @@ class MainFragment : Fragment() {
 
         zhinengshangwang_new_switch.setOnClickListener{
             val act = activity as JNewActivity
-            if (act.profile.route == Acl.GFWLIST){
+            if (act.profile.route == Acl.BYPASS_LAN_CHN){
 //                全局模式
                 act.profile.route = Acl.ALL
                 ProfileManager.updateProfile(act.profile)
             }else{
 //                智能模式
-                act.profile.route = Acl.GFWLIST
+                act.profile.route = Acl.BYPASS_LAN_CHN
                 ProfileManager.updateProfile(act.profile)
             }
             updateZhi()
