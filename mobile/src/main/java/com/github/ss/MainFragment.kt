@@ -24,15 +24,13 @@ import kotlinx.android.synthetic.main.activity_store.*
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.android.synthetic.main.layout_line.view.*
 import kotlinx.android.synthetic.main.layout_production.view.*
-import org.jetbrains.anko.longToast
 import org.jetbrains.anko.sdk27.coroutines.onClick
 import org.jetbrains.anko.support.v4.longToast
 import org.jetbrains.anko.support.v4.toast
-import org.jetbrains.anko.toast
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import kotlinx.android.synthetic.main.activity_j_new.*
-import org.jetbrains.anko.alert
+import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.alert
 
 
@@ -74,13 +72,13 @@ class MainFragment : Fragment() {
         super.onDestroyView()
     }
     fun updateZhi(){
-        Log.v("J","act=${act},status=${act.state}")
+//        Log.v("J","act=${act},status=${act.state}")
         zhinengshangwang_new_switch.isEnabled = (act.state == BaseService.State.Idle || act.state == BaseService.State.Stopped)
 
         if (act.profile.route == Acl.ALL){
             zhinengshangwang_new_text.setText(getString(R.string.all_proxy))
             zhinengshangwang_new_help.setText(getString(R.string.all_proxy_help))
-        }else if (act.profile.route == Acl.GFWLIST){
+        }else if (act.profile.route == Acl.BYPASS_LAN_CHN){
             zhinengshangwang_new_text.setText(getString(R.string.gfw_proxy))
             zhinengshangwang_new_help.setText(getString(R.string.gfw_proxy_help))
         }else{
@@ -110,6 +108,7 @@ class MainFragment : Fragment() {
                         Log.e("J", "d==null")
                         return@post
                     }
+
                     if (d.error != null && d.error != ""){
                         longToast(d.error)
                         Log.e("J", "error:${d.error}")
@@ -120,6 +119,18 @@ class MainFragment : Fragment() {
                         }
                         updateLineButton()
                         return@post
+                    }else{
+                        when(act.state) {
+                            BaseService.State.Idle,BaseService.State.Stopped -> {
+                                act.status_button.text = getString(R.string.status_stop)
+                            }
+                            BaseService.State.Connected -> {
+                                act.status_button.text = getString(R.string.status_start)
+                            }
+                            else -> {
+                                act.status_button.text = getString(R.string.status_doing)
+                            }
+                        }
                     }
 
                     var id = sharedPreferences.getString(lineIDKey,"")
@@ -148,17 +159,29 @@ class MainFragment : Fragment() {
     }
 
     fun updateLineButton(){
-        line_button.isEnabled = (act.state == BaseService.State.Idle || act.state == BaseService.State.Stopped)
+        val enable = (act.state == BaseService.State.Idle || act.state == BaseService.State.Stopped)
 
-        if (prodectionList.count() <= 0) {
-            line_button.text = "无线路"
+        if (enable == false) {
+            line_button.textColor = resources.getColor(R.color.gray_drak)
             line_button.onClick {
-                getLineList()
+                longToast("已连接状态不能切换线路")
             }
-        }else{
-            line_button.text = lineName
-            line_button.onClick {
-                line_list.visibility = View.VISIBLE
+        }else {
+            line_button.textColor = resources.getColor(R.color.black)
+            if (prodectionList.count() <= 0) {
+                line_button.text = "无线路"
+                line_button.onClick {
+                    getLineList()
+                }
+            }else{
+                line_button.text = lineName
+                line_button.onClick {
+                    if (line_list.visibility == View.VISIBLE){
+                        line_list.visibility = View.GONE
+                    }else {
+                        line_list.visibility = View.VISIBLE
+                    }
+                }
             }
         }
     }

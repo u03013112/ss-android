@@ -189,7 +189,7 @@ object BaseService {
                         if (bandwidthListeners.contains(item.asBinder())) {
                             stats.forEach { (id, stats) -> item.trafficUpdated(id, stats) }
                             item.trafficUpdated(0, sum)
-                            Log.v("J","SUM:"+sum.toString())
+//                            Log.v("J","SUM:"+sum.toString())
                             rx = sum.rxTotal
                         }
                     }

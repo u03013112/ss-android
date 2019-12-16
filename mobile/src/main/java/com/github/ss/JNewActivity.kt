@@ -68,7 +68,6 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback, Reward
 
         connection.connect(this, this)
         connection.bandwidthTimeout = 1000
-        login()
 
         MobileAds.initialize(this) {}
         mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this)
@@ -84,6 +83,11 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback, Reward
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        login()
+    }
+
     private val dialogHeight = 460f
     private fun initWebviewDialog() {
         webviewDialog = WebviewDialog(this)
@@ -97,7 +101,7 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback, Reward
 
     private fun loadRewardedVideoAd() {
         mRewardedVideoAd.loadAd(rewardID, AdRequest.Builder().build())
-        Log.v("J","loadRewardedVideoAd:${rewardID}")
+//        Log.v("J","loadRewardedVideoAd:${rewardID}")
     }
 
     private fun setupViewPager(viewPager: ViewPager) {
@@ -216,6 +220,7 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback, Reward
             netflow_use_textView.text = "欢迎光临！\n大爷来玩啊~"
             op_button.text = "新用户点击领取使用大礼包"
             op_button.visibility = View.VISIBLE
+            status_button.visibility = View.GONE
             op_button.setOnClickListener{
                 val post = ViewModelProvider(this).get<HttpPost>()
                 post.post("https://frp.u03013112.win:18022/v1/android/buyTest","""
@@ -237,9 +242,11 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback, Reward
             var calendar = Calendar.getInstance()
             calendar.timeInMillis = expiresDate * 1000
             op_button.visibility = View.GONE
+            status_button.visibility = View.VISIBLE
             op_button.onClick { }
             Log.v("J",calendar.time.toString())
             netflow_use_textView.text = "有效期至：\n${SimpleDateFormat("yyyy-MM-dd\nHH:mm:ss").format(calendar.time)}\n拥有流量：${Formatter.formatFileSize(this, total)}\n已用：${Formatter.formatFileSize(this, used)}"
+            mainFragment?.getLineList()
         }
     }
 
@@ -324,8 +331,7 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback, Reward
     }
 
     override fun onRewardedVideoAdFailedToLoad(errorCode: Int) {
-//        toast("onRewardedVideoAdFailedToLoad ${errorCode}")
-        Log.v("J","onRewardedVideoAdFailedToLoad ${errorCode}")
+//        Log.v("J","onRewardedVideoAdFailedToLoad ${errorCode}")
         GlobalScope.launch{
             delay(1000L)
             withContext(Dispatchers.Main){

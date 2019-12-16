@@ -144,7 +144,7 @@ class JActivity : AppCompatActivity(), Callback , RewardedVideoAdListener {
     }
 
     override fun trafficUpdated(profileId: Long, stats: TrafficStats) {
-        Log.e("J","trafficUpdated")
+//        Log.e("J","trafficUpdated")
         if (profileId == 0L){
             findViewById<TextView>(R.id.netflow_total_textView).text = "▲   ${Formatter.formatFileSize(this, stats.txTotal)}\n▼   ${Formatter.formatFileSize(this, stats.rxTotal)}"
             findViewById<TextView>(R.id.netflow_rate_textView).text = " ${Formatter.formatFileSize(this, stats.txRate)}/s\n${Formatter.formatFileSize(this, stats.rxRate)}/s"

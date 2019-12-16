@@ -7,7 +7,7 @@ import com.github.kittinunf.fuel.Fuel
 class HttpPost : ViewModel() {
 
     fun post(url:String,data:String,callback:(String)->(Unit),failed:(String)->(Unit)) {
-        Log.v("J","post")
+        Log.v("J","post:${url} data:${data}")
 
         val header = mutableMapOf<String, String>()
         header["Content-Type"] = "application/json"
