@@ -9,9 +9,6 @@ import android.provider.Settings
 import android.text.format.Formatter
 import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
 import androidx.viewpager.widget.ViewPager
@@ -37,6 +34,7 @@ import org.jetbrains.anko.sdk27.coroutines.onClick
 import java.text.SimpleDateFormat
 import java.util.*
 import android.content.DialogInterface
+import android.content.pm.ActivityInfo
 
 class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback, RewardedVideoAdListener {
     var viewPager: ViewPager? = null
@@ -54,6 +52,7 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback, Reward
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContentView(R.layout.activity_j_new)
         viewPager = view_page
         setupViewPager(viewPager!!)
@@ -245,7 +244,7 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback, Reward
             status_button.visibility = View.VISIBLE
             op_button.onClick { }
             Log.v("J",calendar.time.toString())
-            netflow_use_textView.text = "有效期至：\n${SimpleDateFormat("yyyy-MM-dd\nHH:mm:ss").format(calendar.time)}\n拥有流量：${Formatter.formatFileSize(this, total)}\n已用：${Formatter.formatFileSize(this, used)}"
+            netflow_use_textView.text = "有效期至：\n${SimpleDateFormat("yyyy-MM-dd\nHH:mm:ss").format(calendar.time)}\n拥有流量：\n${Formatter.formatFileSize(this, total)}\n已用：${Formatter.formatFileSize(this, used)}"
             mainFragment?.getLineList()
         }
     }
@@ -331,9 +330,9 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback, Reward
     }
 
     override fun onRewardedVideoAdFailedToLoad(errorCode: Int) {
-//        Log.v("J","onRewardedVideoAdFailedToLoad ${errorCode}")
+        Log.v("J","onRewardedVideoAdFailedToLoad ${errorCode}")
         GlobalScope.launch{
-            delay(1000L)
+            delay(1500L)
             withContext(Dispatchers.Main){
                 loadRewardedVideoAd()
             }
