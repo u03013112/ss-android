@@ -106,6 +106,7 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback, Reward
     private fun setupViewPager(viewPager: ViewPager) {
         val adapter = FragmentAdapter(supportFragmentManager)
         adapter.addFragment(MainFragment(), getString(R.string.setting))
+        adapter.addFragment(StoreFragment(),"购买")
         adapter.addFragment(AboutJFragment(), getString(R.string.about))
 
         viewPager.adapter = adapter

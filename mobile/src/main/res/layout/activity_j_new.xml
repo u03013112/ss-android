@@ -96,7 +96,7 @@
                     android:src="@drawable/ic_close"
                     android:background="@drawable/round"
                     android:padding="100dp"
-                    android:backgroundTint="@color/green" />
+                    android:backgroundTint="@color/gray_drak" />
                 <TextView
                     android:id="@+id/netflow_use_textView"
                     android:layout_weight="1"
