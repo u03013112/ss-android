@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:text="购买流量"
             android:textSize="30dp"
-            android:textColor="@color/color_green"
+            android:textColor="@color/green"
             android:gravity="center"
             >
         </TextView>

@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
-          package="com.github.ss.core"
+          package="com.github.ssu03013112.core"
           android:installLocation="internalOnly">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -16,7 +16,7 @@
     <application
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="true"
-        android:backupAgent="com.github.ss.ConfigBackupHelper"
+        android:backupAgent="com.github.ssu03013112.ConfigBackupHelper"
         android:extractNativeLibs="true"
         android:fullBackupContent="@xml/backup_descriptor"
         android:fullBackupOnly="true"
@@ -31,7 +31,7 @@
                    android:value="AEdPqrEAAAAI_zVxZthz2HDuz9toTvkYvL0L5GA-OjeUIfBeXg"/>
 
         <service
-            android:name="com.github.ss.bg.VpnService"
+            android:name="com.github.ssu03013112.bg.VpnService"
             android:process=":bg"
             android:directBootAware="true"
             android:label="@string/app_name"
@@ -43,21 +43,21 @@
         </service>
 
         <service
-            android:name="com.github.ss.bg.TransproxyService"
+            android:name="com.github.ssu03013112.bg.TransproxyService"
             android:process=":bg"
             android:directBootAware="true"
             android:exported="false">
         </service>
 
         <service
-            android:name="com.github.ss.bg.ProxyService"
+            android:name="com.github.ssu03013112.bg.ProxyService"
             android:process=":bg"
             android:directBootAware="true"
             android:exported="false">
         </service>
 
         <activity
-            android:name="com.github.ss.UrlImportActivity"
+            android:name="com.github.ssu03013112.UrlImportActivity"
             android:theme="@style/Theme.AppCompat.Translucent"
             android:excludeFromRecents="true">
             <intent-filter>
@@ -69,12 +69,12 @@
         </activity>
 
         <activity
-            android:name="com.github.ss.VpnRequestActivity"
+            android:name="com.github.ssu03013112.VpnRequestActivity"
             android:theme="@style/Theme.AppCompat.Translucent"
             android:excludeFromRecents="true"
             android:taskAffinity=""/>
 
-        <receiver android:name="com.github.ss.BootReceiver"
+        <receiver android:name="com.github.ssu03013112.BootReceiver"
                   android:process=":bg"
                   android:directBootAware="true"
                   android:enabled="false">

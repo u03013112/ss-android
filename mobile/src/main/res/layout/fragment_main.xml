@@ -20,7 +20,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="@string/choose_line"
-                android:textColor="@color/color_green"
+                android:textColor="@color/green"
                 android:textSize="20sp" />
 
             <Button
@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:text="@string/all_proxy"
-                android:textColor="@color/color_green"
+                android:textColor="@color/green"
                 android:textSize="20sp" />
 
             <LinearLayout

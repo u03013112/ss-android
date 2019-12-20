@@ -6,10 +6,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
     <include layout="@layout/toolbar_light_dark" />
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/barcode"
-        android:name="com.google.android.gms.samples.vision.barcodereader.BarcodeCapture"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        app:gvb_auto_focus="true"/>
+<!--    <androidx.fragment.app.FragmentContainerView-->
+<!--        android:id="@+id/barcode"-->
+<!--        android:name="com.google.android.gms.samples.vision.barcodereader.BarcodeCapture"-->
+<!--        android:layout_width="fill_parent"-->
+<!--        android:layout_height="fill_parent"-->
+<!--        app:gvb_auto_focus="true"/>-->
 </LinearLayout>

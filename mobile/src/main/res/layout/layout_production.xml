@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:text="超值套餐"
                 android:textSize="20sp"
-                android:textColor="@color/color_orange"
+                android:textColor="@color/blue"
                 ></TextView>
             <TextView
                 android:id="@+id/traffic"
@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:text="流量包：5GB"
                 android:textSize="18sp"
-                android:textColor="@color/color_blue"
+                android:textColor="@color/blue"
                 ></TextView>
             <TextView
                 android:id="@+id/time"
@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:text="有效期：7天"
                 android:textSize="18sp"
-                android:textColor="@color/color_blue"
+                android:textColor="@color/blue"
                 ></TextView>
         </LinearLayout>
         <LinearLayout
