@@ -24,11 +24,41 @@ import org.jetbrains.anko.sdk27.coroutines.onClick
 import org.jetbrains.anko.support.v4.longToast
 
 
-class StoreFragment : Fragment(),PurchasesUpdatedListener {
-    override fun onPurchasesUpdated(p0: BillingResult?, p1: MutableList<Purchase>?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+class StoreFragment : Fragment(),PurchasesUpdatedListener ,AcknowledgePurchaseResponseListener{
+    override fun onAcknowledgePurchaseResponse(p0: BillingResult?) {
+        Log.v("J","onAcknowledgePurchaseResponse:${p0}")
     }
 
+    override fun onPurchasesUpdated(billingResult: BillingResult, purchases: List<Purchase>?) {
+        if (billingResult.responseCode == BillingResponseCode.OK && purchases != null) {
+            for (purchase in purchases) {
+                handlePurchase(purchase)
+                Log.v("J","purchase:${purchase}")
+            }
+        } else if (billingResult.responseCode == BillingResponseCode.USER_CANCELED) {
+            // Handle an error caused by a user cancelling the purchase flow.
+            Log.v("J","USER_CANCELED")
+        } else {
+            // Handle any other error codes.
+            Log.v("J","other error codes.${billingResult.responseCode}")
+        }
+    }
+
+    val acknowledgePurchaseResponseListener: AcknowledgePurchaseResponseListener  = this
+    fun handlePurchase(purchase:Purchase) {
+        if (purchase.purchaseState === Purchase.PurchaseState.PURCHASED) {
+            // Grant entitlement to the user.
+            Log.v("J","purchase${purchase}")
+            // Acknowledge the purchase if it hasn't already been acknowledged.
+            if (!purchase.isAcknowledged) {
+
+                val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
+                        .setPurchaseToken(purchase.purchaseToken)
+                        .build()
+                billingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener)
+            }
+        }
+    }
     lateinit var act : JNewActivity
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         act = activity as JNewActivity
@@ -46,6 +76,9 @@ class StoreFragment : Fragment(),PurchasesUpdatedListener {
                     reflush_store_button.visibility = View.GONE
                     reflush_store_button.onClick { }
                     getSkuList()
+
+                    billingClient.queryPurchases(BillingClient.SkuType.INAPP)//这个应该是类似restore，暂时只有消耗类
+
                 }else{
                     Log.v("J","billingResult.responseCode:${billingResult.responseCode}")
                     if (billingResult.responseCode == BillingResponseCode.BILLING_UNAVAILABLE) {
@@ -118,6 +151,7 @@ class StoreFragment : Fragment(),PurchasesUpdatedListener {
 
         inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView),View.OnClickListener {
             var id = ""
+            private var skuDetails:SkuDetails? = null
             fun bind(production : SkuDetails) {
                 itemView.title.text = production.description
                 itemView.price.text = production.price
@@ -125,10 +159,14 @@ class StoreFragment : Fragment(),PurchasesUpdatedListener {
                 itemView.time.text = ""
                 id = production.getSku()
                 itemView.setOnClickListener(this)
+                skuDetails = production
             }
             override fun onClick(v: View?) {
-                longToast("内测阶段，暂不支持支付")
-                Log.v("J",id.toString())
+                Log.v("J","onClick:${skuDetails}")
+                val flowParams = BillingFlowParams.newBuilder()
+                        .setSkuDetails(skuDetails)
+                        .build()
+                val responseCode = billingClient.launchBillingFlow(activity, flowParams)
             }
         }
     }
