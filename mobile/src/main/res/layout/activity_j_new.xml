@@ -35,11 +35,11 @@
                 android:id="@+id/zanzhu_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="赞助"
+                android:text="我不要赞助"
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:background="@color/color_primary"
-                android:layout_weight="1.5"
+                android:layout_weight="2.5"
                 />
             <Button
                 android:visibility="gone"

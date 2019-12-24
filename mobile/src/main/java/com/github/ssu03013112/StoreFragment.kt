@@ -24,10 +24,8 @@ import org.jetbrains.anko.sdk27.coroutines.onClick
 import org.jetbrains.anko.support.v4.longToast
 
 
-class StoreFragment : Fragment(),PurchasesUpdatedListener ,AcknowledgePurchaseResponseListener{
-    override fun onAcknowledgePurchaseResponse(p0: BillingResult?) {
-        Log.v("J","onAcknowledgePurchaseResponse:${p0}")
-    }
+class StoreFragment : Fragment(),PurchasesUpdatedListener{
+
 
     override fun onPurchasesUpdated(billingResult: BillingResult, purchases: List<Purchase>?) {
         if (billingResult.responseCode == BillingResponseCode.OK && purchases != null) {
@@ -44,18 +42,20 @@ class StoreFragment : Fragment(),PurchasesUpdatedListener ,AcknowledgePurchaseRe
         }
     }
 
-    val acknowledgePurchaseResponseListener: AcknowledgePurchaseResponseListener  = this
     fun handlePurchase(purchase:Purchase) {
         if (purchase.purchaseState === Purchase.PurchaseState.PURCHASED) {
             // Grant entitlement to the user.
             Log.v("J","purchase${purchase}")
-            // Acknowledge the purchase if it hasn't already been acknowledged.
-            if (!purchase.isAcknowledged) {
 
-                val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
-                        .setPurchaseToken(purchase.purchaseToken)
-                        .build()
-                billingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener)
+            var consumeParams = ConsumeParams.newBuilder().setPurchaseToken(purchase.purchaseToken).build()
+            if (!purchase.isAcknowledged) {
+                billingClient.consumeAsync(consumeParams) { billingResult, outToken ->
+                    if (billingResult.responseCode == BillingResponseCode.OK) {
+//                        add here!
+                        
+                    }
+                }
+
             }
         }
     }
@@ -99,8 +99,13 @@ class StoreFragment : Fragment(),PurchasesUpdatedListener ,AcknowledgePurchaseRe
     }
     private fun getSkuList() {
         val skuList = ArrayList<String>()
+        skuList.add("com.github.ssu03013112.p1")
+        skuList.add("com.github.ssu03013112.p2")
+        skuList.add("com.github.ssu03013112.p3")
+        skuList.add("com.github.ssu03013112.p4")
+        skuList.add("com.github.ssu03013112.p5")
         skuList.add("android.test.purchased")
-        skuList.add("android.test.canceled")
+
 //        skuList.add("android.test.item_unavailable")
         val params = SkuDetailsParams.newBuilder()
         params.setSkusList(skuList).setType(BillingClient.SkuType.INAPP)
