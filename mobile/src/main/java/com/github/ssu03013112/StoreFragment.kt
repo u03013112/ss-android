@@ -47,15 +47,17 @@ class StoreFragment : Fragment(),PurchasesUpdatedListener{
             // Grant entitlement to the user.
             Log.v("J","purchase${purchase}")
 
-            var consumeParams = ConsumeParams.newBuilder().setPurchaseToken(purchase.purchaseToken).build()
+            var consumeParams = ConsumeParams.newBuilder().
+                    setPurchaseToken(purchase.purchaseToken).
+                    build()
             if (!purchase.isAcknowledged) {
                 billingClient.consumeAsync(consumeParams) { billingResult, outToken ->
                     if (billingResult.responseCode == BillingResponseCode.OK) {
-//                        add here!
-                        
+                        Log.v("J","consumeAsync ok")
+                    }else{
+                        Log.v("J","consumeAsync ${billingResult.responseCode}")
                     }
                 }
-
             }
         }
     }
