@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainFragment"
-    android:background="#EAEAEA"
+    android:background="@color/porn_white"
     android:orientation="vertical"
     android:padding="20dp">
     <ScrollView
@@ -20,7 +20,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="@string/choose_line"
-                android:textColor="@color/green"
+                android:textColor="@color/porn_orange"
                 android:textSize="20sp" />
 
             <Button
@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:text="@string/all_proxy"
-                android:textColor="@color/green"
+                android:textColor="@color/porn_orange"
                 android:textSize="20sp" />
 
             <LinearLayout

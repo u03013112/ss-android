@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center_horizontal"
+    android:paddingTop="20dp"
     tools:context=".StoreFragment">
 
     <Button
@@ -12,13 +13,14 @@
         android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/porn_orange"
         android:text="reflush" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/store_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="10"
+        android:layout_weight="1"
         android:clipChildren="false"
         android:scrollbars="vertical"
         tools:listitem="@layout/layout_production" />

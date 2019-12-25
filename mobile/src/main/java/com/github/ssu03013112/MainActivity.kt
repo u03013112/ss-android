@@ -221,12 +221,10 @@ class MainActivity : AppCompatActivity(), ShadowsocksConnection.Callback, OnPref
         }
         return true
     }
-
     override fun onStart() {
         super.onStart()
         connection.bandwidthTimeout = 500
     }
-
     override fun onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) drawer.closeDrawers() else {
             val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_holder) as ToolbarFragment
@@ -238,7 +236,6 @@ class MainActivity : AppCompatActivity(), ShadowsocksConnection.Callback, OnPref
             }
         }
     }
-
     override fun onKeyShortcut(keyCode: Int, event: KeyEvent) = when {
         keyCode == KeyEvent.KEYCODE_G && event.hasModifiers(KeyEvent.META_CTRL_ON) -> {
             toggle()

@@ -110,7 +110,7 @@ class StoreFragment : Fragment(),PurchasesUpdatedListener{
         skuList.add("com.github.ssu03013112.p3")
         skuList.add("com.github.ssu03013112.p4")
         skuList.add("com.github.ssu03013112.p5")
-        skuList.add("android.test.purchased")
+//        skuList.add("android.test.purchased")
 
 //        skuList.add("android.test.item_unavailable")
         val params = SkuDetailsParams.newBuilder()

@@ -366,8 +366,8 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback, Reward
 
     fun updateAdButton() {
         if (mRewardedVideoAd.isLoaded && (state == BaseService.State.Idle || state == BaseService.State.Stopped)) {
-            ad_button.setTextColor(resources.getColor(R.color.red))
-            ad_button.background.setTint(Color.YELLOW)
+            ad_button.setTextColor(resources.getColor(R.color.porn_orange))
+            ad_button.background.setTint(Color.WHITE)
             ad_button.onClick {
                 ad_button.setTextColor(resources.getColor(R.color.gray_drak))
                 ad_button.background.setTint(Color.LTGRAY)

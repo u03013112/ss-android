@@ -14,7 +14,7 @@
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/color_primary"
+            android:background="@color/porn_light_gray"
             android:padding="5dp"
             >
             <Button
@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:text="免费获取流量"
                 android:textSize="14sp"
-                android:textColor="@color/gray_drak"
+                android:textColor="@color/porn_orange"
                 android:layout_weight="5"
                 />
             <Space
@@ -38,25 +38,16 @@
                 android:text="我不要赞助"
                 android:textColor="@color/white"
                 android:textSize="14sp"
-                android:background="@color/color_primary"
+                android:backgroundTint="@color/porn_orange"
                 android:layout_weight="2.5"
                 />
-            <Button
-                android:visibility="gone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="分享"
-                android:textSize="14sp"
-                android:textColor="@color/white"
-                android:background="@color/color_primary"
-                android:layout_weight="1"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center_horizontal"
-            android:background="@color/color_primary"
+            android:background="@color/porn_dark_gray"
             android:padding="5dp"
             >
             <LinearLayout
@@ -96,7 +87,7 @@
                     android:src="@drawable/ic_close"
                     android:background="@drawable/round"
                     android:padding="100dp"
-                    android:backgroundTint="@color/gray_drak" />
+                    android:backgroundTint="@color/porn_orange" />
                 <TextView
                     android:id="@+id/netflow_use_textView"
                     android:layout_weight="1"
@@ -125,7 +116,7 @@
                 android:layout_height="wrap_content"
                 android:text="状态：正在初始化，请稍后"
                 android:textSize="14sp"
-                android:textColor="#000000"
+                android:textColor="@color/porn_orange"
                 android:backgroundTint="@color/white" />
         </LinearLayout>
         <com.google.android.material.tabs.TabLayout

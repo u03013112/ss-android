@@ -130,6 +130,7 @@ class MainFragment : Fragment() {
 
                     var id = sharedPreferences.getString(lineIDKey,"")
                     var lineIdOk = false
+                    prodectionList.clear()
                     for (line in d.list) {
                         prodectionList.add(line)
                         if (line.id == id){
@@ -185,7 +186,7 @@ class MainFragment : Fragment() {
     private fun initRecyclerView(){
         line_list.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-            val topSpacingDecorator = TopSpacingItemDecoration(30)
+            val topSpacingDecorator = TopSpacingItemDecoration(3)
             addItemDecoration(topSpacingDecorator)
             lineAdapter = LineAdapter()
             adapter = lineAdapter
