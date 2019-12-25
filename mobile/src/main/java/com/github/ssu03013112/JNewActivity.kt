@@ -35,6 +35,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.content.DialogInterface
 import android.content.pm.ActivityInfo
+import com.umeng.analytics.MobclickAgent
+import com.umeng.commonsdk.UMConfigure
 
 class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback, RewardedVideoAdListener {
     var viewPager: ViewPager? = null
@@ -52,6 +54,10 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback, Reward
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        UMConfigure.init(this,"5e031dde4ca357e9300007f5","GOOGLE_PLAY",UMConfigure.DEVICE_TYPE_PHONE,null)
+        MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.AUTO)
+
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContentView(R.layout.activity_j_new)
         viewPager = view_page
@@ -214,7 +220,7 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback, Reward
         val d = Gson().fromJson(str, keepaliveData::class.java)
         updateUI(d.expiresDate.toLong(),d.total.toLong(),d.used.toLong())
     }
-    private fun updateUI(expiresDate :Long,total :Long,used:Long) {
+    fun updateUI(expiresDate :Long,total :Long,used:Long) {
         Log.v("J","${expiresDate},${total},${used}")
         if (expiresDate == 0L){
             netflow_use_textView.text = "欢迎光临！\n大爷来玩啊~"

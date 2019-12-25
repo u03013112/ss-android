@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.billingclient.api.*
 import com.android.billingclient.api.BillingClient.BillingResponseCode
 import com.github.ssu03013112.net.HttpPost
+import com.github.ssu03013112.preference.DataStore
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_store.*
 import kotlinx.android.synthetic.main.fragment_store.*
@@ -22,6 +23,8 @@ import kotlinx.android.synthetic.main.layout_production.view.*
 import org.jetbrains.anko.longToast
 import org.jetbrains.anko.sdk27.coroutines.onClick
 import org.jetbrains.anko.support.v4.longToast
+import org.jetbrains.anko.support.v4.toast
+import org.jetbrains.anko.toast
 
 
 class StoreFragment : Fragment(),PurchasesUpdatedListener{
@@ -42,7 +45,7 @@ class StoreFragment : Fragment(),PurchasesUpdatedListener{
         }
     }
 
-    fun handlePurchase(purchase:Purchase) {
+    private fun handlePurchase(purchase:Purchase) {
         if (purchase.purchaseState === Purchase.PurchaseState.PURCHASED) {
             // Grant entitlement to the user.
             Log.v("J","purchase${purchase}")
@@ -54,6 +57,7 @@ class StoreFragment : Fragment(),PurchasesUpdatedListener{
                 billingClient.consumeAsync(consumeParams) { billingResult, outToken ->
                     if (billingResult.responseCode == BillingResponseCode.OK) {
                         Log.v("J","consumeAsync ok")
+                        getProduction("${purchase.sku}")
                     }else{
                         Log.v("J","consumeAsync ${billingResult.responseCode}")
                     }
@@ -194,5 +198,38 @@ class StoreFragment : Fragment(),PurchasesUpdatedListener{
             storeAdapter = StoreAdapter()
             adapter = storeAdapter
         }
+    }
+
+    private fun getProduction(pid:String) {
+        Log.v("J","getProduction ${pid}")
+        var prodectionID = 0
+
+        when (pid) {
+            "com.github.ssu03013112.p1" -> prodectionID = 6
+            "com.github.ssu03013112.p2" -> prodectionID = 2
+            "com.github.ssu03013112.p3" -> prodectionID = 3
+            "com.github.ssu03013112.p4" -> prodectionID = 4
+            "com.github.ssu03013112.p5" -> prodectionID = 5
+            else -> {
+                Log.e("J","not support this pid")
+                return
+            }
+        }
+
+        val post = ViewModelProvider(this).get<HttpPost>()
+        post.post("https://frp.u03013112.win:18022/v1/android/buyTest","""
+                    {"token":"${DataStore.token}","prodectionID":${prodectionID}}
+                """.trimIndent(),
+                {str ->
+                    Log.v("J",str)
+                    toast("购买成功!")
+                    val d = Gson().fromJson(str, JActivity.LoginData::class.java)
+                    act.updateUI(d.expiresDate.toLong(),d.total.toLong(),d.used.toLong())
+                    return@post
+                }, {
+            err -> Log.e("J", err)
+            toast("登陆失败，正在重试!")
+        }
+        )
     }
 }
