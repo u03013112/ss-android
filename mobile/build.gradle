@@ -15,11 +15,10 @@ def getCurrentFlavor() {
         return "debug"
     }
 }
-
 android {
     compileSdkVersion rootProject.compileSdkVersion
     defaultConfig {
-        applicationId 'com.github.ssu03013112'
+        applicationId 'com.github.kxu03013112'
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.sdkVersion
         versionCode rootProject.versionCode

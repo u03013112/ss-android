@@ -411,7 +411,7 @@ int wait_for_fd()
     }
     fcntl(sock, F_SETFL, flags | O_NONBLOCK);
 
-    char *path = "/data/data/com.github.ssu03013112/sock_path";
+    char *path = "/data/data/com.github.kxu03013112/sock_path";
     if (options.sock_path != NULL) {
         path = options.sock_path;
     }
@@ -487,8 +487,8 @@ int main (int argc, char **argv)
 
     if (options.fake_proc) {
         // Fake process name to cheat on Lollipop
-        strcpy(argv[0], "com.github.ssu03013112");
-        prctl(PR_SET_NAME, "com.github.ssu03013112");
+        strcpy(argv[0], "com.github.kxu03013112");
+        prctl(PR_SET_NAME, "com.github.kxu03013112");
     }
 
     // handle --help and --version
