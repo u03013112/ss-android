@@ -56,7 +56,7 @@
             android:exported="false">
         </service>
 
-        <activity
+            <activity
             android:name="com.github.kxu03013112.UrlImportActivity"
             android:theme="@style/Theme.AppCompat.Translucent"
             android:excludeFromRecents="true">

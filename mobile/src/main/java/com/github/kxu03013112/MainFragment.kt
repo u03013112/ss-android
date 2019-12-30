@@ -39,12 +39,12 @@ class MainFragment : Fragment() {
     }
 
     private val lineIDKey = "lineIDKey"
-    private var lineId = 0
-    private var lineName = ""
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         act.mainFragment = this
         updateZhi()
+        initRecyclerView()
+        updateLineButton()
         super.onViewCreated(view, savedInstanceState)
 
         zhinengshangwang_new_switch.setOnClickListener{
@@ -91,12 +91,12 @@ class MainFragment : Fragment() {
             val error : String = "",
             val list:ArrayList<getLineData>
     )
-    private val prodectionList:ArrayList<getLineData> = ArrayList()
+
     fun getLineList(){
         val post = ViewModelProvider(this).get<HttpPost>()
         post.post("https://frp.u03013112.win:18022/v1/config/get-line-list","{\"token\":\"${DataStore.token}\"}",
                 {str ->
-                    Log.e("J",str)
+                    Log.e("J(getLineList)",str)
                     val d = Gson().fromJson(str, getLineListData::class.java)
                     if (d == null) {
                         toast("d==null")
@@ -130,19 +130,19 @@ class MainFragment : Fragment() {
 
                     var id = sharedPreferences.getString(lineIDKey,"")
                     var lineIdOk = false
-                    prodectionList.clear()
+                    act.prodectionList.clear()
                     for (line in d.list) {
-                        prodectionList.add(line)
+                        act.prodectionList.add(line)
                         if (line.id == id){
                             lineIdOk = true
-                            lineName = line.name
-                            lineId = line.id.toInt()
+                            act.lineName = line.name
+                            act.lineId = line.id.toInt()
                         }
                     }
-                    if (lineIdOk == false && prodectionList.size > 0) {
-                        sharedPreferences.edit().putString(lineIDKey,prodectionList[0].id)
-                        lineName = prodectionList[0].name
-                        lineId = prodectionList[0].id.toInt()
+                    if (lineIdOk == false && act.prodectionList.size > 0) {
+                        sharedPreferences.edit().putString(lineIDKey,act.prodectionList[0].id)
+                        act.lineName = act.prodectionList[0].name
+                        act.lineId = act.prodectionList[0].id.toInt()
                     }
 
                     initRecyclerView()
@@ -164,14 +164,15 @@ class MainFragment : Fragment() {
             }
         }else {
             line_button.textColor = resources.getColor(R.color.black)
-            if (prodectionList.count() <= 0) {
+            if (act.prodectionList.count() <= 0) {
                 line_button.text = "无线路"
                 line_button.onClick {
                     getLineList()
                 }
             }else{
-                line_button.text = lineName
+                line_button.text = act.lineName
                 line_button.onClick {
+//                    Log.v("J","line_button did clicked ${act.lineName} ${act.prodectionList}")
                     if (line_list.visibility == View.VISIBLE){
                         line_list.visibility = View.GONE
                     }else {
@@ -206,13 +207,13 @@ class MainFragment : Fragment() {
         }
 
         override fun getItemCount(): Int {
-            return prodectionList.size
+            return act.prodectionList.size
         }
 
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
             when(holder) {
                 is Holder -> {
-                    holder.bind(prodectionList.get(position))
+                    holder.bind(act.prodectionList.get(position))
                 }
             }
         }
@@ -229,8 +230,8 @@ class MainFragment : Fragment() {
             override fun onClick(v: View?) {
                 Log.v("J","线路被选择:${id}")
                 sharedPreferences.edit().putString(lineIDKey,id).apply()
-                lineId = id.toInt()
-                lineName = itemView.line_name.text.toString()
+                act.lineId = id.toInt()
+                act.lineName = itemView.line_name.text.toString()
                 line_list.visibility = View.GONE
                 updateLineButton()
             }
@@ -238,7 +239,7 @@ class MainFragment : Fragment() {
     }
     fun startWithLineConfig() {
         var post = ViewModelProvider(this).get<HttpPost>()
-        post.post("https://frp.u03013112.win:18022/v1/config/get-line-config","{\"token\":\"${DataStore.token}\",\"id\":${lineId}}",
+        post.post("https://frp.u03013112.win:18022/v1/config/get-line-config","{\"token\":\"${DataStore.token}\",\"id\":${act.lineId}}",
             {str ->
                 Log.v("J",str)
                 val d = Gson().fromJson(str, JActivity.VPNConfig::class.java)

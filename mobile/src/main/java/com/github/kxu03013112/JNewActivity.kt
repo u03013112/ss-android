@@ -255,7 +255,9 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback, Reward
             mainFragment?.getLineList()
         }
     }
-
+    val prodectionList:ArrayList<MainFragment.getLineData> = ArrayList()
+    var lineId = 0
+    var lineName = ""
     private fun login() {
         val androidID = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
         Log.v("J",androidID)
@@ -274,7 +276,6 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback, Reward
                     Log.v("J","token:${token}")
                     DataStore.token = token
                     updateUI(d.expiresDate.toLong(),d.total.toLong(),d.used.toLong())
-                    mainFragment?.getLineList()
 
                     getGoogleAd()
                     showHello()

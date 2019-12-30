@@ -79,15 +79,15 @@
                     android:textColor="@color/white"
                     android:visibility="invisible"
                     >flow</TextView>
+
                 <ImageButton
                     android:id="@+id/connect_button_new"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="120dp"
-                    android:src="@drawable/ic_close"
                     android:background="@drawable/round"
-                    android:padding="100dp"
-                    android:backgroundTint="@color/porn_orange" />
+                    android:backgroundTint="@color/porn_orange"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_close" />
                 <TextView
                     android:id="@+id/netflow_use_textView"
                     android:layout_weight="1"
