@@ -239,31 +239,14 @@ class MainFragment : Fragment() {
     }
     fun startWithLineConfig() {
         var post = ViewModelProvider(this).get<HttpPost>()
-        post.post("https://frp.u03013112.win:18022/v1/config/get-line-config","{\"token\":\"${DataStore.token}\",\"id\":${act.lineId}}",
-            {str ->
-                Log.v("J",str)
-                val d = Gson().fromJson(str, JActivity.VPNConfig::class.java)
-
-                if (d.error != ""){
-                    longToast(d.error)
-                    return@post
-                }
-
-                act.profile.host=d.IP
-                act.profile.remotePort=d.port.toInt()
-                act.profile.password=d.passwd
-                act.profile.method=d.method
-                ProfileManager.updateProfile(act.profile)
-
-                Core.startService()
-                return@post
-            },
-            {err ->
-                Log.e("J", err)
-                alert("连接服务器失败", "尊敬的用户") {
-                    positiveButton("重试") { startWithLineConfig() }
-                }.show()
-            }
-        )
+        post.getVPNConfig(act.profile,{
+            ProfileManager.updateProfile(act.profile)
+            Core.startService()
+        },{str ->
+            Log.e("J", str)
+            alert(str, "尊敬的用户") {
+                positiveButton("重试") { startWithLineConfig() }
+            }.show()
+        })
     }
 }

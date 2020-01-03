@@ -113,4 +113,7 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var token : String
         get() = privateStore.getString(Key.token) ?: ""
         set(value) = privateStore.putString(Key.token, value)
+    var androidID : String
+        get() = privateStore.getString(Key.androidID) ?:""
+        set(value) = privateStore.putString(Key.androidID, value)
 }

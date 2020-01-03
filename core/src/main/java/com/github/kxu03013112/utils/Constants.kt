@@ -28,6 +28,7 @@ object Key {
     const val DB_PROFILE = "profile.db"
 
     const val token = "token"
+    const val androidID = "androidID"
     const val id = "profileId"
     const val name = "profileName"
 

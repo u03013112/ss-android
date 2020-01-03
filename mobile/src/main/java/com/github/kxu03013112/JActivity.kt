@@ -32,6 +32,7 @@ import com.google.android.gms.ads.reward.RewardedVideoAd
 import com.google.android.gms.ads.reward.RewardedVideoAdListener
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_j.*
+import kotlinx.android.synthetic.main.activity_j_new.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk27.coroutines.onClick
 import java.text.SimpleDateFormat
@@ -261,42 +262,17 @@ class JActivity : AppCompatActivity(), Callback , RewardedVideoAdListener {
         )
     }
 
-    data class VPNConfig (
-        val IP : String = "",
-        val port : String = "",
-        val method : String = "",
-        val passwd : String = "",
-        val expiresDate : String = "",
-        val error: String = ""
-    )
     private  fun getVPNConfig() {
         var post = ViewModelProvider(this).get<HttpPost>()
-        post.post("https://frp.u03013112.win:18022/v1/android/config","{\"token\":\"${DataStore.token}\"}",
-            {str ->
-                Log.v("J",str)
-                val d = Gson().fromJson(str, VPNConfig::class.java)
-
-                if (d.error != ""){
-                    longToast(d.error)
-                    return@post
-                }
-
-                this.profile.host=d.IP
-                this.profile.remotePort=d.port.toInt()
-                this.profile.password=d.passwd
-                this.profile.method=d.method
-                ProfileManager.updateProfile(this.profile)
-
-                Core.startService()
-                return@post
-            },
-            {err ->
-                Log.e("J", err)
-                alert("连接服务器失败", "尊敬的用户") {
-                    positiveButton("重试") { getVPNConfig() }
-                }.show()
-            }
-        )
+        post.getVPNConfig(this.profile,{
+            ProfileManager.updateProfile(this.profile)
+            Core.startService()
+        },{str ->
+            Log.e("J", str)
+            alert(str, "尊敬的用户") {
+                positiveButton("重试") { getVPNConfig() }
+            }.show()
+        })
     }
 
     private fun updateZhi(){

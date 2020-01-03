@@ -39,6 +39,8 @@ import com.umeng.analytics.MobclickAgent
 import com.umeng.commonsdk.UMConfigure
 
 class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback, RewardedVideoAdListener {
+    val version : String = "v0.0.5"
+
     var viewPager: ViewPager? = null
     private var tabLayout: TabLayout? = null
 
@@ -125,40 +127,21 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback, Reward
                 netflow_speed_textView.visibility = View.INVISIBLE
             }
             else -> {
-//                getVPNConfig()
-//                netflow_speed_textView.visibility = View.VISIBLE
                 mainFragment?.startWithLineConfig()
             }
         }
     }
     private  fun getVPNConfig() {
         var post = ViewModelProvider(this).get<HttpPost>()
-        post.post("https://frp.u03013112.win:18022/v1/android/config","{\"token\":\"${DataStore.token}\"}",
-                {str ->
-                    Log.v("J",str)
-                    val d = Gson().fromJson(str, JActivity.VPNConfig::class.java)
-
-                    if (d.error != ""){
-                        longToast(d.error)
-                        return@post
-                    }
-
-                    this.profile.host=d.IP
-                    this.profile.remotePort=d.port.toInt()
-                    this.profile.password=d.passwd
-                    this.profile.method=d.method
-                    ProfileManager.updateProfile(this.profile)
-
-                    Core.startService()
-                    return@post
-                },
-                {err ->
-                    Log.e("J", err)
-                    alert("连接服务器失败", "尊敬的用户") {
-                        positiveButton("重试") { getVPNConfig() }
-                    }.show()
-                }
-        )
+        post.getVPNConfig(this.profile,{
+            ProfileManager.updateProfile(this.profile)
+            Core.startService()
+        },{str ->
+            Log.e("J", str)
+            alert(str, "尊敬的用户") {
+                positiveButton("重试") { getVPNConfig() }
+            }.show()
+        })
     }
 
     private fun getProfile() {
@@ -259,10 +242,19 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback, Reward
     var lineId = 0
     var lineName = ""
     private fun login() {
-        val androidID = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+        version_text.text = "版本：${version}"
+        var androidID = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+        if (androidID == null || androidID == "") {
+            if (DataStore.androidID == ""){
+                androidID = UUID.randomUUID().toString()
+                DataStore.androidID = androidID
+            }else{
+                androidID = DataStore.androidID
+            }
+        }
         Log.v("J",androidID)
         val post = ViewModelProvider(this).get<HttpPost>()
-        post.post("https://frp.u03013112.win:18022/v1/android/login","{\"uuid\":\"${androidID}\",\"version\":\"v0.0.1\"}",
+        post.post("https://frp.u03013112.win:18022/v1/android/login","{\"uuid\":\"${androidID}\",\"version\":\"${version}\"}",
                 {str ->
                     Log.e("J",str)
                     toast("登陆成功!")

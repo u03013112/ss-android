@@ -22,7 +22,7 @@
                 android:backgroundTint="@color/gray_light"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="免费获取流量"
+                android:text="观看广告获取100MB流量"
                 android:textSize="14sp"
                 android:textColor="@color/porn_orange"
                 android:layout_weight="5"
@@ -55,6 +55,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="end">
                 <TextView
+                    android:id="@+id/version_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="版本v1.0.0"
