@@ -20,7 +20,7 @@
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"/>
 
-        <com.github.kxu03013112.widget.ServiceButton
+        <com.github.kxu03013112free.widget.ServiceButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
         app:pressedTranslationZ="6dp"
         app:srcCompat="@drawable/ic_service_idle"/>
 
-        <com.github.kxu03013112.widget.StatsBar
+        <com.github.kxu03013112free.widget.StatsBar
             android:id="@+id/stats"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -119,7 +119,7 @@
 
             </GridLayout>
 
-        </com.github.kxu03013112.widget.StatsBar>
+        </com.github.kxu03013112free.widget.StatsBar>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

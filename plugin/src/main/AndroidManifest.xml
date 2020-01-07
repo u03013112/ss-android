@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.github.kxu03013112.plugin">
+          package="com.github.kxu03013112free.plugin">
     <application
         android:theme="@style/Theme.Shadowsocks">
-        <meta-data android:name="com.github.kxu03013112.plugin.version"
+        <meta-data android:name="com.github.kxu03013112free.plugin.version"
                    android:value="1.3.1"/>
     </application>
 </manifest>

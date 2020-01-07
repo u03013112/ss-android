@@ -104,11 +104,11 @@
  * default: native; others: gdbm */
 #define CACHE_DBM DBM_NATIVE
 
-#define CONFDIR "/data/data/com.github.kxu03013112"
+#define CONFDIR "/data/data/com.github.kxu03013112free"
 
-#define CACHEDIR "/data/data/com.github.kxu03013112"
+#define CACHEDIR "/data/data/com.github.kxu03013112free"
 
-#define TEMPDIR "/data/data/com.github.kxu03013112/cache";
+#define TEMPDIR "/data/data/com.github.kxu03013112free/cache";
 
 /* This is for various debugging facilities that produce debug output and
  * double-check some values. You can enable debug messages with the -g option.

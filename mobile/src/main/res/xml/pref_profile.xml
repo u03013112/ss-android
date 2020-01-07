@@ -73,7 +73,7 @@
     <PreferenceCategory
             app:title="@string/plugin">
 
-        <com.github.kxu03013112.preference.IconListPreference
+        <com.github.kxu03013112free.preference.IconListPreference
                 app:key="plugin"
                 app:persistent="false"
                 app:title="@string/plugin"
@@ -89,8 +89,8 @@
                 app:key="udpFallback"
                 app:title="@string/udp_fallback"
                 app:summary="@string/plugin_disabled">
-            <intent android:targetPackage="com.github.kxu03013112"
-                    android:targetClass="com.github.kxu03013112.UdpFallbackProfileActivity"/>
+            <intent android:targetPackage="com.github.kxu03013112free"
+                    android:targetClass="com.github.kxu03013112free.UdpFallbackProfileActivity"/>
         </Preference>
 
     </PreferenceCategory>

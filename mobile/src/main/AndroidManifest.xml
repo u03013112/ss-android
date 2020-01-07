@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.github.kxu03013112"
+    package="com.github.kxu03013112free"
     tools:ignore="MissingLeanbackSupport">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -14,9 +14,9 @@
         android:required="false" />
 
     <application
-        android:name="com.github.kxu03013112.App"
+        android:name="com.github.kxu03013112free.App"
         tools:ignore="MissingTvBanner">
-        <activity android:name="com.github.kxu03013112.JNewActivity">
+        <activity android:name="com.github.kxu03013112free.JNewActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.github.kxu03013112.QuickToggleShortcut"
+            android:name="com.github.kxu03013112free.QuickToggleShortcut"
             android:excludeFromRecents="true"
             android:label="@string/quick_toggle"
             android:process=":bg"
@@ -37,7 +37,7 @@
         </activity>
 
         <service
-            android:name="com.github.kxu03013112.bg.TileService"
+            android:name="com.github.kxu03013112free.bg.TileService"
             android:directBootAware="true"
             android:icon="@drawable/ic_money"
             android:label="@string/quick_toggle"
@@ -50,7 +50,7 @@
         </service>
 
         <receiver
-            android:name="com.github.kxu03013112.tasker.ActionListener"
+            android:name="com.github.kxu03013112free.tasker.ActionListener"
             android:directBootAware="true"
             android:process=":bg"
             tools:ignore="ExportedReceiver">

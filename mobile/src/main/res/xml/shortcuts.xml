@@ -5,15 +5,15 @@
               android:shortcutShortLabel="@string/quick_toggle"
               android:shortcutLongLabel="@string/quick_toggle">
         <intent android:action="android.intent.action.MAIN"
-                android:targetPackage="com.github.kxu03013112"
-                android:targetClass="com.github.kxu03013112.QuickToggleShortcut" />
+                android:targetPackage="com.github.kxu03013112free"
+                android:targetClass="com.github.kxu03013112free.QuickToggleShortcut" />
     </shortcut>
     <shortcut android:shortcutId="scan"
               android:icon="@drawable/ic_qu_camera_launcher"
               android:shortcutShortLabel="@string/add_profile_methods_scan_qr_code"
               android:shortcutLongLabel="@string/add_profile_methods_scan_qr_code">
         <intent android:action="android.intent.action.MAIN"
-                android:targetPackage="com.github.kxu03013112"
-                android:targetClass="com.github.kxu03013112.ScannerActivity" />
+                android:targetPackage="com.github.kxu03013112free"
+                android:targetClass="com.github.kxu03013112free.ScannerActivity" />
     </shortcut>
 </shortcuts>
