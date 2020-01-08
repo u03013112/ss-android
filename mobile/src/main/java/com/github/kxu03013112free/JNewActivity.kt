@@ -114,7 +114,7 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback, Reward
     private fun setupViewPager(viewPager: ViewPager) {
         val adapter = FragmentAdapter(supportFragmentManager)
         adapter.addFragment(MainFragment(), getString(R.string.setting))
-        adapter.addFragment(StoreFragment(),"购买")
+//        adapter.addFragment(StoreFragment(),"购买")
         adapter.addFragment(AboutJFragment(), getString(R.string.about))
 
         viewPager.adapter = adapter
@@ -285,7 +285,7 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback, Reward
     )
     private fun getGoogleAd() {
         var post = ViewModelProvider(this).get<HttpPost>()
-        post.post("https://frp.u03013112.win:18022/v1/android/getGoogleAd","{\"token\":\"${DataStore.token}\"}",
+        post.post("https://frp.u03013112.win:18022/v1/android/getGoogleAdFree","{\"token\":\"${DataStore.token}\"}",
                 {str ->
                     Log.v("J",str)
                     val d = Gson().fromJson(str, GetGoogleAdData::class.java)
@@ -305,7 +305,7 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback, Reward
         // Reward the user.
         val post = ViewModelProvider(this).get<HttpPost>()
         post.post("https://frp.u03013112.win:18022/v1/android/buyTest","""
-                    {"token":"${DataStore.token}","prodectionID":7}
+                    {"token":"${DataStore.token}","prodectionID":8}
                 """.trimIndent(),
                 {str ->
                     Log.v("J",str)

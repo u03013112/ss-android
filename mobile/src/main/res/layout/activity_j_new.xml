@@ -22,7 +22,7 @@
                 android:backgroundTint="@color/gray_light"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="观看广告获取100MB流量"
+                android:text="观看广告获取50MB流量"
                 android:textSize="14sp"
                 android:textColor="@color/porn_orange"
                 android:layout_weight="5"
