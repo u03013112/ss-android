@@ -132,6 +132,7 @@ object BaseService {
         private var updatePerSecEr:Job? = null
         private var secondCount = 0
         private var rx = 0L
+        private var tx = 0L
         private data class keepaliveData(
             val needStop : Boolean = false,
             val expiresDate : String = "0",
@@ -147,7 +148,7 @@ object BaseService {
                 if ( data !=null && data!!.state == State.Connected && secondCount % 30 == 0) {
                     val post = HttpPost()
                     val s = """
-                        {"token":"${DataStore.token}","rx":${rx}}
+                        {"token":"${DataStore.token}","rx":${rx},"tx":${tx}}
                     """.trimIndent()
                     Log.v("J",s)
                     post.post("https://frp.u03013112.win:18022/v1/android/keepalive",s,{str ->
@@ -191,6 +192,7 @@ object BaseService {
                             item.trafficUpdated(0, sum)
 //                            Log.v("J","SUM:"+sum.toString())
                             rx = sum.rxTotal
+                            tx = sum.txTotal
                         }
                     }
                 }

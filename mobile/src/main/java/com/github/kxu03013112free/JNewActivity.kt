@@ -56,8 +56,9 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback, Reward
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        UMConfigure.setLogEnabled(true)
         UMConfigure.init(this,"5e031dde4ca357e9300007f5","GOOGLE_PLAY",UMConfigure.DEVICE_TYPE_PHONE,null)
+
         MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.AUTO)
 
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
