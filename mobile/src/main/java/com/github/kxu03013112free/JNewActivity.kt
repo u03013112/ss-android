@@ -39,7 +39,7 @@ import com.umeng.analytics.MobclickAgent
 import com.umeng.commonsdk.UMConfigure
 
 class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback, RewardedVideoAdListener {
-    val version : String = "v0.0.6f"
+    val version : String = "v0.0.10f"
 
     var viewPager: ViewPager? = null
     private var tabLayout: TabLayout? = null
