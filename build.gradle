@@ -10,11 +10,11 @@ buildscript {
         sdkVersion = 29
         compileSdkVersion = 29
         lifecycleVersion = '2.2.0-beta01'
-        junitVersion = '4.12'
+        junitVersion = '4.13'
         androidTestVersion = '1.2.0'
         androidEspressoVersion = '3.2.0'
-        versionCode = 2001171824
-        versionName = '0.0.10'
+        versionCode = 2002062344
+        versionName = '0.0.13'
         resConfigs = ['ar', 'es', 'fa', 'fr', 'ja', 'ko', 'ru', 'tr', 'zh-rCN', 'zh-rTW']
     }
 

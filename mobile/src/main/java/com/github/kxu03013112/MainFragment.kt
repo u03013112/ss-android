@@ -239,7 +239,9 @@ class MainFragment : Fragment() {
     }
     fun startWithLineConfig() {
         var post = ViewModelProvider(this).get<HttpPost>()
-        post.getVPNConfig(act.profile,{
+        var id = sharedPreferences.getString(lineIDKey,"0")
+        var lineID:Int = id!!.toInt()
+        post.getVPNConfig(lineID,act.profile,{
             ProfileManager.updateProfile(act.profile)
             Core.startService()
         },{str ->

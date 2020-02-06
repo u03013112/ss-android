@@ -39,7 +39,7 @@ import com.umeng.analytics.MobclickAgent
 import com.umeng.commonsdk.UMConfigure
 
 class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback, RewardedVideoAdListener {
-    val version : String = "v0.0.10"
+    val version : String = "v0.0.13"
 
     var viewPager: ViewPager? = null
     private var tabLayout: TabLayout? = null
@@ -130,18 +130,6 @@ class JNewActivity : AppCompatActivity(), ShadowsocksConnection.Callback, Reward
                 mainFragment?.startWithLineConfig()
             }
         }
-    }
-    private  fun getVPNConfig() {
-        var post = ViewModelProvider(this).get<HttpPost>()
-        post.getVPNConfig(this.profile,{
-            ProfileManager.updateProfile(this.profile)
-            Core.startService()
-        },{str ->
-            Log.e("J", str)
-            alert(str, "尊敬的用户") {
-                positiveButton("重试") { getVPNConfig() }
-            }.show()
-        })
     }
 
     private fun getProfile() {

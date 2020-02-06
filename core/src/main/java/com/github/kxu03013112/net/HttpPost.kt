@@ -49,8 +49,8 @@ class HttpPost : ViewModel() {
             val expiresDate : String = "",
             val error: String = ""
     )
-    fun getVPNConfig(profile : Profile,callback: () -> Unit,failed: (String) -> Unit){
-        post("https://frp.u03013112.win:18022/v1/android/get-config","{\"token\":\"${DataStore.token}\"}",
+    fun getVPNConfig(lineID:Int,profile : Profile,callback: () -> Unit,failed: (String) -> Unit){
+        post("https://frp.u03013112.win:18022/v1/android/get-config-v1","{\"token\":\"${DataStore.token}\",\"lineID\":${lineID}}",
                 {str ->
                     val d = Gson().fromJson(str, VPNConfig::class.java)
                     val dataStr = decode(d.config)
@@ -64,7 +64,7 @@ class HttpPost : ViewModel() {
                     profile.remotePort=config.port.toInt()
                     profile.password=config.passwd
                     profile.method=config.method
-
+                    Log.v("J","i:${profile.host} p:${profile.password}")
                     callback()
                     return@post
                 },

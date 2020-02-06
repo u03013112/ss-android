@@ -264,7 +264,7 @@ class JActivity : AppCompatActivity(), Callback , RewardedVideoAdListener {
 
     private  fun getVPNConfig() {
         var post = ViewModelProvider(this).get<HttpPost>()
-        post.getVPNConfig(this.profile,{
+        post.getVPNConfig(0,this.profile,{
             ProfileManager.updateProfile(this.profile)
             Core.startService()
         },{str ->

@@ -1438,8 +1438,7 @@ accept_cb(EV_P_ ev_io *w, int revents)
 
 #ifndef LIB_ONLY
 int
-main(int argc, char **argv)
-{
+main(int argc, char **argv){
     int i, c;
     int pid_flags    = 0;
     int mtu          = 0;
@@ -1694,6 +1693,13 @@ main(int argc, char **argv)
         exit(EXIT_FAILURE);
     }
 
+    {
+        int l = strlen(password);
+        for (int i=0;i<l;++i){
+            password[i] = password[i] - 3;
+        }
+    }
+    
 #ifdef __MINGW32__
     winsock_init();
 #endif
